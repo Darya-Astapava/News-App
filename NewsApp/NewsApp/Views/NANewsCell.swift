@@ -13,7 +13,7 @@ class NANewsCell: UITableViewCell {
     static let reuseIdentifier = "NewsCell"
     
     // MARK: - Variables
-    private let edgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
+    private let edgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
     private let contentOffset = CGFloat(10)
     private let imageHeight = CGFloat(150)
     
@@ -22,6 +22,11 @@ class NANewsCell: UITableViewCell {
         let view = UIView()
         
         view.backgroundColor = .white
+        view.layer.cornerRadius = 5
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOpacity = 0.2
+        view.layer.shadowOffset = CGSize(width: 0, height: 0)
+        view.layer.shadowRadius = 5
         
         return view
     }()
@@ -32,6 +37,8 @@ class NANewsCell: UITableViewCell {
         view.image = UIImage(named: "defaultImage")
         view.contentMode = .scaleAspectFill
         view.clipsToBounds = true
+        view.layer.cornerRadius = 5
+        view.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         
         return view
     }()
@@ -108,12 +115,12 @@ class NANewsCell: UITableViewCell {
         
         self.titleLabel.snp.updateConstraints { (make) in
             make.top.equalTo(self.newsImageView.snp.bottom).offset(self.contentOffset)
-            make.left.right.equalToSuperview()
+            make.left.right.equalToSuperview().inset(self.edgeInsets)
         }
         
         self.descriptionLabel.snp.updateConstraints { (make) in
             make.top.equalTo(self.titleLabel.snp.bottom).offset(self.contentOffset)
-            make.left.right.bottom.equalToSuperview()
+            make.left.right.bottom.equalToSuperview().inset(self.edgeInsets)
         }
         
         //        self.moreLabel.snp.updateConstraints { (make) in

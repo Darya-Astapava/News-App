@@ -17,11 +17,9 @@ class NANewsTableVC: UITableViewController {
     }
     
     private lazy var cellIdentifier: String = NANewsCell.reuseIdentifier
+    
     private lazy var date = Date()
     private lazy var dateCount = 1
-    private lazy var page: Int = 1
-    private lazy var articlesCount: Int = 0
-    private lazy var displayedArticlesCount: Int = 0
     private lazy var isMakingRequest: Bool = false
     
     
@@ -35,9 +33,9 @@ class NANewsTableVC: UITableViewController {
     }
     
     // MARK: - Methods
-    private func sendRequest(date: Date, page: Int = 1) {
+    private func sendRequest(date: Date) {
         // For today news
-        let parameters: [String: String] = ["from": date.formatDateToString(), "page": String(page)]
+        let parameters: [String: String] = ["from": date.formatDateToString()]
         
         NANetworking.shared.request(parameters: parameters,
                                     successHandler: { [weak self] (model: NAResponseModel) in
@@ -60,13 +58,12 @@ class NANewsTableVC: UITableViewController {
     // MARK: - Handlers
     private func handleResponse(model: NAResponseModel) {
         var newModel: [NANewsModel] = []
+        
         model.articles.forEach { (article) in
             newModel.append(article)
         }
-        self.articlesCount = model.totalResults
         
         self.model += newModel
-        Swift.debugPrint("Total articles count - \(articlesCount)")
     }
     
     private func handleError(error: NANetworkingErrors) {
@@ -119,29 +116,17 @@ extension NANewsTableVC {
             let news = self.model[indexPath.row]
             
             // TODO: перегружает всю таблицу и ячейки начинают повторяться
-            if indexPath.row == self.model.count - 5 {
-                if self.articlesCount > self.displayedArticlesCount,
-                   self.isMakingRequest == false {
-                    self.displayedArticlesCount += 20
-                    if self.displayedArticlesCount < self.articlesCount {
-                        self.page += 1
-                        self.isMakingRequest = true
-                        self.sendRequest(date: self.date, page: self.page)
-                        
-                        Swift.debugPrint("DisplayedArticlesCount - \(self.displayedArticlesCount)")
-                    }
-                }
+            
+            // Create request to get new articles when left 10 articles.
+            if indexPath.row == self.model.count - 10,
+               self.dateCount <= 7,
+               self.isMakingRequest == false {
+                self.isMakingRequest = true
+                let newDate = Date(timeInterval: -86400, since: self.date)
+                self.date = newDate
+                self.dateCount += 1
                 
-                if self.articlesCount == self.model.count, self.dateCount <= 7 {
-                    // TODO: new request with yesterday date and add data to model
-                    self.displayedArticlesCount = 0
-                    self.page = 1
-                    let date = Date(timeInterval: -86400, since: self.date)
-                    self.date = date
-                    self.dateCount += 1
-                    Swift.debugPrint("Date for new request", date, "displayedArticlesCount - \(self.displayedArticlesCount)")
-                    self.sendRequest(date: date)
-                }
+                self.sendRequest(date: self.date)
             }
             
             cell.setNews(title: news.title,

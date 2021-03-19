@@ -22,7 +22,7 @@ class NANetworking {
         "apiKey": self.apiKey,
         "sources": "bbc-news",
         "language": "en",
-        "pageSize": "20"
+        "pageSize": "99"
     ]
     
     // MARK: - Initializations

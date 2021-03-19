@@ -19,6 +19,8 @@
 		0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7D2260383350026F39F /* NANetworkingErrors.swift */; };
 		0487F7D62603880C0026F39F /* NANetworking+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7D52603880C0026F39F /* NANetworking+Ex.swift */; };
 		0487F7DE2603A51C0026F39F /* NAResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7DD2603A51C0026F39F /* NAResponseModel.swift */; };
+		0487F7E1260483540026F39F /* NASourceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E0260483540026F39F /* NASourceModel.swift */; };
+		0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E32604876A0026F39F /* UIImageView+Ex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,8 @@
 		0487F7D2260383350026F39F /* NANetworkingErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANetworkingErrors.swift; sourceTree = "<group>"; };
 		0487F7D52603880C0026F39F /* NANetworking+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NANetworking+Ex.swift"; sourceTree = "<group>"; };
 		0487F7DD2603A51C0026F39F /* NAResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAResponseModel.swift; sourceTree = "<group>"; };
+		0487F7E0260483540026F39F /* NASourceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASourceModel.swift; sourceTree = "<group>"; };
+		0487F7E32604876A0026F39F /* UIImageView+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				0487F7A0260371EE0026F39F /* UIView+Ex.swift */,
+				0487F7E32604876A0026F39F /* UIImageView+Ex.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -120,6 +125,7 @@
 			children = (
 				0487F7CD260376DF0026F39F /* NANewsModel.swift */,
 				0487F7DD2603A51C0026F39F /* NAResponseModel.swift */,
+				0487F7E0260483540026F39F /* NASourceModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -203,7 +209,9 @@
 				0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */,
 				0487F77826036AE40026F39F /* AppDelegate.swift in Sources */,
 				0487F7A7260375EB0026F39F /* NANewsTableVC.swift in Sources */,
+				0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */,
 				0487F79126036B980026F39F /* NANetworking.swift in Sources */,
+				0487F7E1260483540026F39F /* NASourceModel.swift in Sources */,
 				0487F79826036F7D0026F39F /* NANewsCell.swift in Sources */,
 				0487F7A1260371EE0026F39F /* UIView+Ex.swift in Sources */,
 				0487F7CE260376DF0026F39F /* NANewsModel.swift in Sources */,

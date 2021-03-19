@@ -9,7 +9,11 @@ import UIKit
 
 class NANewsTableVC: UITableViewController {
     // MARK: - Variables
-    private lazy var model: [NANewsModel] = []
+    private lazy var model: [NANewsModel]? = nil {
+        didSet {
+            self.tableView.reloadData()
+        }
+    }
     private lazy var cellIdentifier: String = NANewsCell.reuseIdentifier
 
     // MARK: - Life cycle
@@ -42,6 +46,7 @@ class NANewsTableVC: UITableViewController {
     // MARK: - Handlers
     private func handleResponse(model: NAResponseModel) {
         Swift.debugPrint(model)
+        self.model = model.articles
     }
     
     private func handleError(error: NANetworkingErrors) {
@@ -72,6 +77,9 @@ class NANewsTableVC: UITableViewController {
         self.present(alert, animated: true)
     }
     
+}
+
+extension NANewsTableVC {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -79,7 +87,7 @@ class NANewsTableVC: UITableViewController {
 
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        return 1 //self.model.count
+        return self.model?.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView,
@@ -87,9 +95,11 @@ class NANewsTableVC: UITableViewController {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier,
                                                  for: indexPath)
-        if let cell = cell as? NANewsCell {
-            cell.setNews(title: "Some news title",
-                         description: "Some news description")
+        if let cell = cell as? NANewsCell, let model = self.model {
+            let news = model[indexPath.row]
+            
+            cell.setNews(title: news.title,
+                         description: news.description ?? "")
         }
 
         return cell

@@ -20,8 +20,9 @@ class NANetworking {
     
     private lazy var parameters: [String: String] = [
         "apiKey": self.apiKey,
-        "sources": "cnn",
-        "language": "en"
+        "sources": "bbc-news",
+        "language": "en",
+        "pageSize": "20"
     ]
     
     // MARK: - Initializations
@@ -29,18 +30,14 @@ class NANetworking {
     
     // MARK: - Methods
     /// Create request with path parameters.
-    func request(parameters: [String: String]? = nil,
-                               successHandler: @escaping (NAResponseModel) -> Void,
-                               errorHandler: @escaping (NANetworkingErrors) -> Void) {
+    func request(parameters: [String: String],
+                 successHandler: @escaping (NAResponseModel) -> Void,
+                 errorHandler: @escaping (NANetworkingErrors) -> Void) {
         // Add necessary parameters to apiKey
         var urlParameters = self.parameters
         
-        if let parameters = parameters {
-            parameters.forEach { urlParameters[$0.key] = $0.value }
-        } else {
-            let date = Date()
-            urlParameters["from"] = self.formatDateToString(date: date)
-        }
+        // TODO: - thinking about passing only one parameter "from". We don't need to pass more parameters.
+        parameters.forEach { urlParameters[$0.key] = $0.value }
         
         // Generate url with baseUrl, path and parameters
         guard let fullUrl = self.getUrlWith(url: self.baseURL,
@@ -50,7 +47,7 @@ class NANetworking {
             return
         }
         
-        Swift.debugPrint(fullUrl)
+        Swift.debugPrint("Full url - ", fullUrl)
         let request = URLRequest(url: fullUrl)
         let dataTask = self.session.dataTask(with: request) { data, response, error in
             if let error = error {
@@ -65,14 +62,13 @@ class NANetworking {
                 case 200..<300:
                     // Success server response handling
                     do {
-                        Swift.debugPrint("case 200..<300 do")
                         let model = try JSONDecoder().decode(NAResponseModel.self, from: data)
                         DispatchQueue.main.async {
                             successHandler(model)
                         }
                     } catch let error {
                         Swift.debugPrint("case 200..<300 catch")
-
+                        
                         DispatchQueue.main.async {
                             errorHandler(.parsingError(error: error))
                         }
@@ -96,12 +92,6 @@ class NANetworking {
             }
         }
         dataTask.resume()
-    }
-    
-    private func formatDateToString(date: Date) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        return dateFormatter.string(from: date)
     }
 }
 

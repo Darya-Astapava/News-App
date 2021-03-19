@@ -21,6 +21,7 @@
 		0487F7DE2603A51C0026F39F /* NAResponseModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7DD2603A51C0026F39F /* NAResponseModel.swift */; };
 		0487F7E1260483540026F39F /* NASourceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E0260483540026F39F /* NASourceModel.swift */; };
 		0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E32604876A0026F39F /* UIImageView+Ex.swift */; };
+		0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E62604C96A0026F39F /* Date+Ex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 		0487F7DD2603A51C0026F39F /* NAResponseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAResponseModel.swift; sourceTree = "<group>"; };
 		0487F7E0260483540026F39F /* NASourceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASourceModel.swift; sourceTree = "<group>"; };
 		0487F7E32604876A0026F39F /* UIImageView+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ex.swift"; sourceTree = "<group>"; };
+		0487F7E62604C96A0026F39F /* Date+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 			children = (
 				0487F7A0260371EE0026F39F /* UIView+Ex.swift */,
 				0487F7E32604876A0026F39F /* UIImageView+Ex.swift */,
+				0487F7E62604C96A0026F39F /* Date+Ex.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -211,6 +214,7 @@
 				0487F7A7260375EB0026F39F /* NANewsTableVC.swift in Sources */,
 				0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */,
 				0487F79126036B980026F39F /* NANetworking.swift in Sources */,
+				0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */,
 				0487F7E1260483540026F39F /* NASourceModel.swift in Sources */,
 				0487F79826036F7D0026F39F /* NANewsCell.swift in Sources */,
 				0487F7A1260371EE0026F39F /* UIView+Ex.swift in Sources */,

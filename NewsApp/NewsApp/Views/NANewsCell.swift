@@ -43,6 +43,16 @@ class NANewsCell: UITableViewCell {
         return view
     }()
     
+    private lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        
+        label.font = .systemFont(ofSize: 10)
+        label.textColor = .white
+        label.numberOfLines = 1
+        
+        return label
+    }()
+    
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         
@@ -84,6 +94,7 @@ class NANewsCell: UITableViewCell {
     private func initView() {
         self.contentView.addSubview(self.containerView)
         self.containerView.addSubviews([self.newsImageView,
+                                        self.dateLabel,
                                         self.titleLabel,
                                         self.descriptionLabel//,
                                         // self.moreLabel
@@ -95,9 +106,11 @@ class NANewsCell: UITableViewCell {
     // TODO: - set image
     func setNews(title: String,
                  description: String,
+                 date: String,
                  imageURL: String?) {
         self.titleLabel.text = title
         self.descriptionLabel.text = description
+        self.dateLabel.text = date
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
     }
@@ -111,6 +124,11 @@ class NANewsCell: UITableViewCell {
         self.newsImageView.snp.updateConstraints { (make) in
             make.top.left.right.equalToSuperview()
             make.height.equalTo(self.imageHeight)
+        }
+        
+        self.dateLabel.snp.updateConstraints { (make) in
+            make.right.equalTo(self.newsImageView.snp.right).offset(-self.contentOffset)
+            make.bottom.equalTo(self.newsImageView.snp.bottom).offset(-self.contentOffset)
         }
         
         self.titleLabel.snp.updateConstraints { (make) in

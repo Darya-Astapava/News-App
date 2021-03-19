@@ -99,7 +99,8 @@ extension NANewsTableVC {
             let news = model[indexPath.row]
             
             cell.setNews(title: news.title,
-                         description: news.description ?? "")
+                         description: news.description ?? "",
+                         imageURL: news.urlToImage)
         }
 
         return cell

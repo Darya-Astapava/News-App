@@ -86,9 +86,13 @@ class NANewsCell: UITableViewCell {
     
     // MARK: - Methods
     // TODO: - set image
-    func setNews(title: String, description: String) {
+    func setNews(title: String,
+                 description: String,
+                 imageURL: String?) {
         self.titleLabel.text = title
         self.descriptionLabel.text = description
+        guard let url = imageURL else { return }
+        self.newsImageView.load(with: url)
     }
     
     // MARK: - Constraints

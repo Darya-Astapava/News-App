@@ -12,6 +12,7 @@ class NANewsTableVC: UITableViewController {
     private lazy var model: [NANewsModel] = [] {
         didSet {
             self.tableView.reloadData()
+            
             Swift.debugPrint("Reload data")
         }
     }
@@ -21,7 +22,7 @@ class NANewsTableVC: UITableViewController {
     private lazy var date = Date()
     private lazy var dateCount = 1
     private lazy var isMakingRequest: Bool = false
-    
+    private lazy var rowCount = 0
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -66,6 +67,7 @@ class NANewsTableVC: UITableViewController {
         self.sendRequest(date: self.date)
     }
     
+    // MARK: - Actions
     @objc private func refresh() {
         self.date = Date()
         self.sendRequest(date: self.date)
@@ -82,6 +84,10 @@ class NANewsTableVC: UITableViewController {
         model.articles.forEach { (article) in
             newModel.append(article)
         }
+        
+        self.rowCount = model.articles.count < 99
+            ? self.rowCount + model.articles.count
+            : self.rowCount + 99
         
         self.model += newModel
     }
@@ -124,7 +130,7 @@ extension NANewsTableVC {
     
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        return self.model.count
+        return self.rowCount
     }
     
     override func tableView(_ tableView: UITableView,
@@ -135,15 +141,6 @@ extension NANewsTableVC {
         if let cell = cell as? NANewsCell {
             let news = self.model[indexPath.row]
             
-            // TODO: перегружает всю таблицу и ячейки начинают повторяться
-            
-            // Create request to get new articles when left 10 articles.
-            if indexPath.row == self.model.count - 10,
-               self.dateCount <= 7,
-               self.isMakingRequest == false {
-                self.loadMoreArticles()
-            }
-            
             cell.setNews(title: news.title,
                          description: news.description ?? "",
                          date: news.publishedAt,
@@ -151,5 +148,16 @@ extension NANewsTableVC {
         }
         
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView,
+                            willDisplay cell: UITableViewCell,
+                            forRowAt indexPath: IndexPath) {
+        // Create request to get new articles when left 10 articles.
+        if indexPath.row == self.rowCount - 5,
+           self.dateCount <= 7,
+           self.isMakingRequest == false {
+            self.loadMoreArticles()
+        }
     }
 }

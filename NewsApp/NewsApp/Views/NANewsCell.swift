@@ -100,6 +100,8 @@ class NANewsCell: UITableViewCell {
                                         // self.moreLabel
         ])
         self.constraints()
+        
+        self.selectionStyle = .none
     }
     
     // MARK: - Methods
@@ -113,6 +115,13 @@ class NANewsCell: UITableViewCell {
         self.dateLabel.text = date
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
+    }
+    
+    override func prepareForReuse() {
+            self.newsImageView.image = UIImage(named: "defaultImage")
+        self.titleLabel.text = ""
+        self.descriptionLabel.text = ""
+        self.dateLabel.text = ""
     }
     
     // MARK: - Constraints

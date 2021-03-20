@@ -48,11 +48,31 @@ class NANewsTableVC: UITableViewController {
     }
     
     private func setupTableView() {
+        self.tableView.refreshControl?.addTarget(self, action: #selector(self.refresh),
+                                                 for: .valueChanged)
         self.tableView.register(NANewsCell.self,
                                 forCellReuseIdentifier: self.cellIdentifier)
         
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
+    }
+    
+    private func loadMoreArticles() {
+        self.isMakingRequest = true
+        let newDate = Date(timeInterval: -86400, since: self.date)
+        self.date = newDate
+        self.dateCount += 1
+        
+        self.sendRequest(date: self.date)
+    }
+    
+    @objc private func refresh() {
+        self.date = Date()
+        self.sendRequest(date: self.date)
+        
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
+        }
     }
     
     // MARK: - Handlers
@@ -121,12 +141,7 @@ extension NANewsTableVC {
             if indexPath.row == self.model.count - 10,
                self.dateCount <= 7,
                self.isMakingRequest == false {
-                self.isMakingRequest = true
-                let newDate = Date(timeInterval: -86400, since: self.date)
-                self.date = newDate
-                self.dateCount += 1
-                
-                self.sendRequest(date: self.date)
+                self.loadMoreArticles()
             }
             
             cell.setNews(title: news.title,
@@ -136,12 +151,5 @@ extension NANewsTableVC {
         }
         
         return cell
-    }
-    
-    override func tableView(_ tableView: UITableView,
-                            willDisplay cell: UITableViewCell,
-                            forRowAt indexPath: IndexPath) {
-        let modelCount = self.model.count
-        
     }
 }

@@ -1,5 +1,5 @@
 //
-//  NANewsTableVC.swift
+//  NANewsTableViewController.swift
 //  NewsApp
 //
 //  Created by Дарья Астапова on 18.03.21.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class NANewsTableVC: UITableViewController {
+class NANewsTableViewController: UITableViewController {
     // MARK: - Variables
     private lazy var model: [NANewsModel] = [] {
         didSet {
@@ -16,8 +16,6 @@ class NANewsTableVC: UITableViewController {
             Swift.debugPrint("Reload data")
         }
     }
-    
-    private lazy var cellIdentifier: String = NANewsCell.reuseIdentifier
     
     private lazy var date = Date()
     private lazy var dateCount = 1
@@ -52,7 +50,7 @@ class NANewsTableVC: UITableViewController {
         self.tableView.refreshControl?.addTarget(self, action: #selector(self.refresh),
                                                  for: .valueChanged)
         self.tableView.register(NANewsCell.self,
-                                forCellReuseIdentifier: self.cellIdentifier)
+                                forCellReuseIdentifier: NANewsCell.reuseIdentifier)
         
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
@@ -122,7 +120,7 @@ class NANewsTableVC: UITableViewController {
     
 }
 
-extension NANewsTableVC {
+extension NANewsTableViewController {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -136,7 +134,7 @@ extension NANewsTableVC {
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier,
+        let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
             let news = self.model[indexPath.row]

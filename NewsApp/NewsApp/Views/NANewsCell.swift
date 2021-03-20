@@ -14,8 +14,8 @@ class NANewsCell: UITableViewCell {
     
     // MARK: - Variables
     private let edgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
-    private let contentOffset = CGFloat(10)
-    private let imageHeight = CGFloat(150)
+    private let contentOffset: CGFloat = 10
+    private let imageHeight: CGFloat = 150
     
     // MARK: - GUI Variables
     private lazy var containerView: UIView = {
@@ -25,7 +25,7 @@ class NANewsCell: UITableViewCell {
         view.layer.cornerRadius = 5
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.2
-        view.layer.shadowOffset = CGSize(width: 0, height: 0)
+        view.layer.shadowOffset = .zero
         view.layer.shadowRadius = 5
         
         return view

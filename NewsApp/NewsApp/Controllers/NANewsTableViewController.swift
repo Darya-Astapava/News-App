@@ -9,14 +9,7 @@ import UIKit
 
 class NANewsTableViewController: UITableViewController {
     // MARK: - Variables
-    private lazy var model: [NANewsModel] = [] {
-        didSet {
-            self.tableView.reloadData()
-            
-            Swift.debugPrint("Reload data")
-        }
-    }
-    
+    private lazy var model: [NANewsModel] = []
     private lazy var date = Date()
     private lazy var dateCount = 1
     private lazy var isMakingRequest: Bool = false
@@ -34,7 +27,8 @@ class NANewsTableViewController: UITableViewController {
     // MARK: - Methods
     private func sendRequest(date: Date) {
         // For today news
-        let parameters: [String: String] = ["from": date.formatDateToString()]
+        let parameters: [String: String] = ["from": date.formatDateToString(),
+                                            "to": date.formatDateToString()]
         
         NANetworking.shared.request(parameters: parameters,
                                     successHandler: { [weak self] (model: NAResponseModel) in
@@ -43,6 +37,7 @@ class NANewsTableViewController: UITableViewController {
                                     },
                                     errorHandler: { [weak self] (error) in
                                         self?.handleError(error: error)
+                                        self?.isMakingRequest = false
                                     })
     }
     
@@ -83,11 +78,13 @@ class NANewsTableViewController: UITableViewController {
             newModel.append(article)
         }
         
-        self.rowCount = model.articles.count < 99
+        // Compare with 100 because page siza of response limited 100 articles
+        self.rowCount = model.articles.count < 100
             ? self.rowCount + model.articles.count
-            : self.rowCount + 99
+            : self.rowCount + 100
         
         self.model += newModel
+        self.tableView.reloadData()
     }
     
     private func handleError(error: NANetworkingErrors) {
@@ -152,7 +149,7 @@ extension NANewsTableViewController {
                             willDisplay cell: UITableViewCell,
                             forRowAt indexPath: IndexPath) {
         // Create request to get new articles when left 10 articles.
-        if indexPath.row == self.rowCount - 5,
+        if indexPath.row == self.rowCount - 10,
            self.dateCount <= 7,
            self.isMakingRequest == false {
             self.loadMoreArticles()

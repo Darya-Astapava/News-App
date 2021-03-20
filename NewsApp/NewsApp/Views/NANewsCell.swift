@@ -105,7 +105,6 @@ class NANewsCell: UITableViewCell {
     }
     
     // MARK: - Methods
-    // TODO: - set image
     func setNews(title: String,
                  description: String,
                  date: String,
@@ -118,7 +117,7 @@ class NANewsCell: UITableViewCell {
     }
     
     override func prepareForReuse() {
-            self.newsImageView.image = UIImage(named: "defaultImage")
+        self.newsImageView.image = UIImage(named: "defaultImage")
         self.titleLabel.text = ""
         self.descriptionLabel.text = ""
         self.dateLabel.text = ""

@@ -22,7 +22,8 @@ class NANetworking {
         "apiKey": self.apiKey,
         "sources": "bbc-news",
         "language": "en",
-        "pageSize": "99"
+        // Limit page size because free developer plan allow to get only 100 articles in one request.
+        "pageSize": "100"
     ]
     
     // MARK: - Initializations

@@ -77,6 +77,11 @@ class NANewsCell: UITableViewCell {
     private lazy var moreLabel: UILabel = {
         let label = UILabel()
         
+        label.text = "Show more"
+        label.textColor = .blue
+        label.font = .systemFont(ofSize: 16)
+        label.isHidden = true
+        
         return label
     }()
     
@@ -96,8 +101,8 @@ class NANewsCell: UITableViewCell {
         self.containerView.addSubviews([self.newsImageView,
                                         self.dateLabel,
                                         self.titleLabel,
-                                        self.descriptionLabel//,
-                                        // self.moreLabel
+                                        self.descriptionLabel,
+                                        self.moreLabel
         ])
         self.constraints()
     }
@@ -117,9 +122,9 @@ class NANewsCell: UITableViewCell {
             for _ in 110..<descriptionCount {
                 array.removeLast()
             }
-            let string = String(array)
-            let fullString = string + "... " + "Show more"
-            self.descriptionLabel.text = fullString
+            let newDescription = String(array)
+            self.descriptionLabel.text = newDescription + "..."
+            self.moreLabel.isHidden = false
         } else {
             self.descriptionLabel.text = description
         }
@@ -154,13 +159,9 @@ class NANewsCell: UITableViewCell {
             make.left.right.bottom.equalToSuperview().inset(self.edgeInsets)
         }
         
-        //        self.moreLabel.snp.updateConstraints { (make) in
-        //            make.left.equalTo(self.descriptionLabel.snp.right).offset(self.contentOffset)
-        //            make.right.bottom.equalToSuperview()
-        //        }
-    }
-    
-    private func showMore() {
-        // TODO
+        self.moreLabel.snp.updateConstraints { (make) in
+            make.right.equalTo(self.descriptionLabel.snp.right)
+            make.bottom.equalToSuperview().inset(self.edgeInsets)
+        }
     }
 }

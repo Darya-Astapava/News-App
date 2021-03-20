@@ -14,7 +14,7 @@
 		0487F79826036F7D0026F39F /* NANewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F79726036F7D0026F39F /* NANewsCell.swift */; };
 		0487F79D26036FF40026F39F /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0487F79C26036FF40026F39F /* SnapKit */; };
 		0487F7A1260371EE0026F39F /* UIView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7A0260371EE0026F39F /* UIView+Ex.swift */; };
-		0487F7A7260375EB0026F39F /* NANewsTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7A6260375EB0026F39F /* NANewsTableVC.swift */; };
+		0487F7A7260375EB0026F39F /* NANewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7A6260375EB0026F39F /* NANewsTableViewController.swift */; };
 		0487F7CE260376DF0026F39F /* NANewsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7CD260376DF0026F39F /* NANewsModel.swift */; };
 		0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7D2260383350026F39F /* NANetworkingErrors.swift */; };
 		0487F7D62603880C0026F39F /* NANetworking+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7D52603880C0026F39F /* NANetworking+Ex.swift */; };
@@ -22,6 +22,7 @@
 		0487F7E1260483540026F39F /* NASourceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E0260483540026F39F /* NASourceModel.swift */; };
 		0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E32604876A0026F39F /* UIImageView+Ex.swift */; };
 		0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E62604C96A0026F39F /* Date+Ex.swift */; };
+		0487F7EC2605CB050026F39F /* NAActivityIndicatorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7EB2605CB050026F39F /* NAActivityIndicatorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,7 +34,7 @@
 		0487F79026036B980026F39F /* NANetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANetworking.swift; sourceTree = "<group>"; };
 		0487F79726036F7D0026F39F /* NANewsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsCell.swift; sourceTree = "<group>"; };
 		0487F7A0260371EE0026F39F /* UIView+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ex.swift"; sourceTree = "<group>"; };
-		0487F7A6260375EB0026F39F /* NANewsTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsTableVC.swift; sourceTree = "<group>"; };
+		0487F7A6260375EB0026F39F /* NANewsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsTableViewController.swift; sourceTree = "<group>"; };
 		0487F7CD260376DF0026F39F /* NANewsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsModel.swift; sourceTree = "<group>"; };
 		0487F7D2260383350026F39F /* NANetworkingErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANetworkingErrors.swift; sourceTree = "<group>"; };
 		0487F7D52603880C0026F39F /* NANetworking+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NANetworking+Ex.swift"; sourceTree = "<group>"; };
@@ -41,6 +42,7 @@
 		0487F7E0260483540026F39F /* NASourceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASourceModel.swift; sourceTree = "<group>"; };
 		0487F7E32604876A0026F39F /* UIImageView+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ex.swift"; sourceTree = "<group>"; };
 		0487F7E62604C96A0026F39F /* Date+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ex.swift"; sourceTree = "<group>"; };
+		0487F7EB2605CB050026F39F /* NAActivityIndicatorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NAActivityIndicatorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 			isa = PBXGroup;
 			children = (
 				0487F79726036F7D0026F39F /* NANewsCell.swift */,
+				0487F7EB2605CB050026F39F /* NAActivityIndicatorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -108,7 +111,7 @@
 		0487F79626036F000026F39F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0487F7A6260375EB0026F39F /* NANewsTableVC.swift */,
+				0487F7A6260375EB0026F39F /* NANewsTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -210,8 +213,9 @@
 			files = (
 				0487F7DE2603A51C0026F39F /* NAResponseModel.swift in Sources */,
 				0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */,
+				0487F7EC2605CB050026F39F /* NAActivityIndicatorView.swift in Sources */,
 				0487F77826036AE40026F39F /* AppDelegate.swift in Sources */,
-				0487F7A7260375EB0026F39F /* NANewsTableVC.swift in Sources */,
+				0487F7A7260375EB0026F39F /* NANewsTableViewController.swift in Sources */,
 				0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */,
 				0487F79126036B980026F39F /* NANetworking.swift in Sources */,
 				0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */,

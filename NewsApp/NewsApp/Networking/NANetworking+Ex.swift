@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 extension NANetworking {
     func getUrlWith(url: String, path: String,
                     parameters: [String: String]? = nil) -> URL? {

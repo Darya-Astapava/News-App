@@ -103,14 +103,27 @@ class NANewsCell: UITableViewCell {
     }
     
     // MARK: - Methods
-    // TODO: - set image
     func setNews(title: String,
                  description: String,
                  date: String,
                  imageURL: String?) {
         self.titleLabel.text = title
-        self.descriptionLabel.text = description
         self.dateLabel.text = date
+        
+        var array = Array(description)
+        let descriptionCount = array.count
+        Swift.debugPrint(array, "count - ", descriptionCount)
+        if descriptionCount >= 120 {
+            for _ in 110..<descriptionCount {
+                array.removeLast()
+            }
+            let string = String(array)
+            let fullString = string + "... " + "Show more"
+            self.descriptionLabel.text = fullString
+        } else {
+            self.descriptionLabel.text = description
+        }
+        
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
     }

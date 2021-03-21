@@ -124,6 +124,12 @@ class NANewsCell: UITableViewCell {
         self.layoutIfNeeded()
     }
     
+    override func prepareForReuse() {
+        self.titleLabel.text = ""
+        self.dateLabel.text = ""
+        self.descriptionLabel.text = ""
+    }
+    
     // MARK: - Constraints
     private func constraints() {
         self.containerView.snp.updateConstraints { (make) in

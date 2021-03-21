@@ -15,6 +15,7 @@ class NANewsTableViewController: UITableViewController {
     private lazy var dateCount = 1
     private lazy var isMakingRequest: Bool = false
     private lazy var states: [Bool] = []
+    private lazy var rowCount = 0
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -89,7 +90,6 @@ class NANewsTableViewController: UITableViewController {
         let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
         self.states += statesForNewArticles
         
-        Swift.debugPrint("Total articles count - \(articlesCount)")
         self.tableView.reloadData()
     }
     
@@ -160,7 +160,6 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
         tableView.endUpdates()
     }
     
-extension NANewsTableViewController {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -178,7 +177,7 @@ extension NANewsTableViewController {
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
             // For expandable label delegate
-            cell.delegate = self
+
             cell.setStateForDescription(state: self.states[indexPath.row])
             
             let news = self.model[indexPath.row]

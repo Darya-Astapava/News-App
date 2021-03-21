@@ -16,6 +16,16 @@ class NANewsTableViewController: UITableViewController {
     private lazy var isMakingRequest: Bool = false
     private lazy var states: [Bool] = []
     private lazy var rowCount = 0
+    private lazy var filteredNews: [NANewsModel] = []
+    
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return false }
+        return text.isEmpty
+    }
+    
+    private var isFiltering: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
     
     private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
@@ -140,13 +150,7 @@ class NANewsTableViewController: UITableViewController {
     
 }
 
-extension NANewsTableViewController: ExpandableLabelDelegate,
-                                     UISearchResultsUpdating,
-                                     UISearchBarDelegate {
-    func updateSearchResults(for searchController: UISearchController) {
-        // 
-    }
-    
+extension NANewsTableViewController: ExpandableLabelDelegate {
     
     // MARK: - Expandable Label Delegate Methods
     func willExpandLabel(_ label: ExpandableLabel) {
@@ -190,7 +194,11 @@ extension NANewsTableViewController: ExpandableLabelDelegate,
     
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        return self.rowCount
+        if isFiltering {
+            return self.filteredNews.count
+        } else {
+            return self.rowCount
+        }
     }
     
     override func tableView(_ tableView: UITableView,
@@ -203,8 +211,10 @@ extension NANewsTableViewController: ExpandableLabelDelegate,
 
             cell.setStateForDescription(state: self.states[indexPath.row])
             
-            let news = self.model[indexPath.row]
-            
+            let news: NANewsModel = isFiltering
+                ? self.filteredNews[indexPath.row]
+                : self.model[indexPath.row]
+
             cell.setNews(title: news.title,
                          description: news.description ?? "",
                          date: news.publishedAt,
@@ -225,4 +235,22 @@ extension NANewsTableViewController: ExpandableLabelDelegate,
             self.loadMoreArticles()
         }
     }
+}
+
+extension NANewsTableViewController: UISearchResultsUpdating,
+                                     UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = self.searchController.searchBar.text else { return }
+        filterContentForSearchText(text)
+    }
+    
+    private func filterContentForSearchText(_ searchText: String) {
+        
+        self.filteredNews = self.model.filter({ (news: NANewsModel) -> Bool in
+            return news.title.lowercased().contains(searchText.lowercased())
+        })
+        
+        tableView.reloadData()
+    }
+
 }

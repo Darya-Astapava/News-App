@@ -8,7 +8,7 @@
 import UIKit
 import ExpandableLabel
 
-class NANewsTableVC: UITableViewController {
+class NANewsTableViewController: UITableViewController {
     // MARK: - Variables
     private lazy var model: [NANewsModel] = [] {
         didSet {
@@ -104,7 +104,7 @@ class NANewsTableVC: UITableViewController {
     
 }
 
-extension NANewsTableVC: ExpandableLabelDelegate {
+extension NANewsTableViewController: ExpandableLabelDelegate {
     
     // MARK: - Expandable Label Delegate Methods
     func willExpandLabel(_ label: ExpandableLabel) {

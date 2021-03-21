@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import ExpandableLabel
 
 class NANewsCell: UITableViewCell {
     // MARK: - Static Variables
@@ -63,25 +64,20 @@ class NANewsCell: UITableViewCell {
         return label
     }()
     
-    private lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
+    private lazy var descriptionLabel: ExpandableLabel = {
+        let label = ExpandableLabel()
         
-        label.font = .systemFont(ofSize: 16)
         label.textColor = .gray
         label.numberOfLines = 3
-        label.lineBreakMode = .byTruncatingTail
-        
-        
-        return label
-    }()
-    
-    private lazy var moreLabel: UILabel = {
-        let label = UILabel()
-        
-        label.text = "Show more"
-        label.textColor = .blue
-        label.font = .systemFont(ofSize: 16)
-        label.isHidden = true
+        label.ellipsis = NSAttributedString(string: "...")
+        label.collapsedAttributedLink = NSAttributedString(string: "Show More",
+                                                           attributes: [
+                                                            NSAttributedString.Key.foregroundColor : UIColor.blue,
+                                                            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
+        label.expandedAttributedLink = NSAttributedString(string: "   Show Less",
+                                                          attributes: [
+                                                           NSAttributedString.Key.foregroundColor : UIColor.blue,
+                                                           NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
         
         return label
     }()
@@ -102,9 +98,8 @@ class NANewsCell: UITableViewCell {
         self.containerView.addSubviews([self.newsImageView,
                                         self.dateLabel,
                                         self.titleLabel,
-                                        self.descriptionLabel,
-                                        self.moreLabel
-        ])
+                                        self.descriptionLabel])
+        
         self.constraints()
     }
     
@@ -115,20 +110,7 @@ class NANewsCell: UITableViewCell {
                  imageURL: String?) {
         self.titleLabel.text = title
         self.dateLabel.text = date
-        
-        var array = Array(description)
-        let descriptionCount = array.count
-        Swift.debugPrint(array, "count - ", descriptionCount)
-        //        if descriptionCount >= 120 {
-        //            for _ in 110..<descriptionCount {
-        //                array.removeLast()
-        //            }
-        //            let newDescription = String(array)
-        //            self.descriptionLabel.text = newDescription
-        //            self.moreLabel.isHidden = false
-        //        } else {
         self.descriptionLabel.text = description
-        //        }
         
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
@@ -159,89 +141,5 @@ class NANewsCell: UITableViewCell {
             make.top.equalTo(self.titleLabel.snp.bottom).offset(self.contentOffset)
             make.left.right.bottom.equalToSuperview().inset(self.edgeInsets)
         }
-        
-        self.moreLabel.snp.updateConstraints { (make) in
-            make.right.equalTo(self.descriptionLabel.snp.right)
-            make.bottom.equalToSuperview().inset(self.edgeInsets)
-        }
-    }
-}
-
-extension UILabel {
-    
-    func addTrailing(with trailingText: String,
-                     moreText: String,
-                     moreTextFont: UIFont,
-                     moreTextColor: UIColor) {
-        
-        let readMoreText: String = trailingText + moreText
-        let lengthForVisibleString: Int = self.vissibleTextLength
-        
-        guard let text = self.text else { return }
-        let mutableString: String = text
-        let trimmedString: String? = (mutableString as NSString)
-            .replacingCharacters(in: NSRange(location: lengthForVisibleString,
-                                             length: (text.count - lengthForVisibleString)),
-                                 with: "")
-        
-        let readMoreLength: Int = (readMoreText.count)
-        
-        guard let trimString = trimmedString else { return }
-        let trimmedForReadMore: String = (trimString as NSString)
-            .replacingCharacters(
-                in: NSRange(location: ((trimmedString?.count ?? 0) - readMoreLength),
-                            length: readMoreLength),
-                with: "") + trailingText
-        
-        let answerAttributed = NSMutableAttributedString(
-            string: trimmedForReadMore,
-            attributes: [NSAttributedString.Key.font: self.font])
-        let readMoreAttributed = NSMutableAttributedString(
-            string: moreText,
-            attributes: [NSAttributedString.Key.font: moreTextFont,
-                         NSAttributedString.Key.foregroundColor: moreTextColor])
-        answerAttributed.append(readMoreAttributed)
-        self.attributedText = answerAttributed
-    }
-    
-    var vissibleTextLength: Int {
-        let font: UIFont = self.font
-        let mode: NSLineBreakMode = self.lineBreakMode
-        let labelWidth: CGFloat = self.frame.size.width
-        let labelHeight: CGFloat = self.frame.size.height
-        let sizeConstraint = CGSize(width: labelWidth,
-                                    height: CGFloat.greatestFiniteMagnitude)
-        
-        let attributes: [AnyHashable: Any] = [NSAttributedString.Key.font: font]
-        
-        let attributedText = NSAttributedString(
-            string: self.text ?? "",
-            attributes: attributes as? [NSAttributedString.Key : Any])
-        
-        let boundingRect: CGRect = attributedText
-            .boundingRect(with: sizeConstraint,
-                          options: .usesLineFragmentOrigin,
-                          context: nil)
-        
-        if boundingRect.size.height > labelHeight {
-            var index: Int = 0
-            var prev: Int = 0
-            let characterSet = CharacterSet.whitespacesAndNewlines
-            repeat {
-                prev = index
-                if mode == NSLineBreakMode.byCharWrapping {
-                    index += 1
-                } else {
-                    index = (self.text! as NSString)
-                        .rangeOfCharacter(from: characterSet,
-                                          options: [],
-                                          range: NSRange(location: index + 1,
-                                                         length: self.text!.count - index - 1)).location
-                }
-                
-            } while index != NSNotFound && index < self.text!.count && (self.text! as NSString).substring(to: index).boundingRect(with: sizeConstraint, options: .usesLineFragmentOrigin, attributes: attributes as? [NSAttributedString.Key : Any], context: nil).size.height <= labelHeight
-            return prev
-        }
-        return self.text!.count
     }
 }

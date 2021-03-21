@@ -156,7 +156,6 @@ extension NANewsTableVC {
     override func tableView(_ tableView: UITableView,
                             willDisplay cell: UITableViewCell,
                             forRowAt indexPath: IndexPath) {
-        let modelCount = self.model.count
-        
+        let _ = self.model.count
     }
 }

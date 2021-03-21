@@ -17,18 +17,34 @@ class NANewsTableViewController: UITableViewController {
     private lazy var states: [Bool] = []
     private lazy var rowCount = 0
     
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        self.navigationController?.navigationItem.searchController = searchController
+        definesPresentationContext = true
+        searchController.searchBar.delegate = self
+        
+        return searchController
+    }()
+    
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.searchController = self.searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
         self.setupTableView()
-        Swift.debugPrint("First request")
         self.sendRequest(date: self.date)
+        
     }
     
     // MARK: - Methods
     private func sendRequest(date: Date) {
-        // For today news
+        // Date for request
         let parameters: [String: String] = ["from": date.formatDateToString(),
                                             "to": date.formatDateToString()]
         
@@ -51,6 +67,7 @@ class NANewsTableViewController: UITableViewController {
         
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
+        
     }
     
     private func loadMoreArticles() {
@@ -123,7 +140,13 @@ class NANewsTableViewController: UITableViewController {
     
 }
 
-extension NANewsTableViewController: ExpandableLabelDelegate {
+extension NANewsTableViewController: ExpandableLabelDelegate,
+                                     UISearchResultsUpdating,
+                                     UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        // 
+    }
+    
     
     // MARK: - Expandable Label Delegate Methods
     func willExpandLabel(_ label: ExpandableLabel) {

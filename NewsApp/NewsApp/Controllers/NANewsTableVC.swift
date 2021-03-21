@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ExpandableLabel
 
 class NANewsTableVC: UITableViewController {
     // MARK: - Variables
@@ -23,7 +24,7 @@ class NANewsTableVC: UITableViewController {
     private lazy var articlesCount: Int = 0
     private lazy var displayedArticlesCount: Int = 0
     private lazy var isMakingRequest: Bool = false
-    
+    private lazy var states: [Bool] = []
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -66,6 +67,10 @@ class NANewsTableVC: UITableViewController {
         self.articlesCount = model.totalResults
         
         self.model += newModel
+        
+        let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
+        self.states += statesForNewArticles
+        
         Swift.debugPrint("Total articles count - \(articlesCount)")
     }
     
@@ -99,7 +104,43 @@ class NANewsTableVC: UITableViewController {
     
 }
 
-extension NANewsTableVC {
+extension NANewsTableVC: ExpandableLabelDelegate {
+    
+    // MARK: - Expandable Label Delegate Methods
+    func willExpandLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("willExpandLabel")
+        self.tableView.beginUpdates()
+    }
+    
+    func didExpandLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("didExpandLabel")
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
+            self.states[indexPath.row] = false
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
+        }
+        self.tableView.endUpdates()
+    }
+    
+    func willCollapseLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("willCollapseLabel")
+        self.tableView.beginUpdates()
+    }
+    
+    func didCollapseLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("didCollapseLabel")
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
+            self.states[indexPath.row] = true
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
+        }
+        tableView.endUpdates()
+    }
+    
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -116,6 +157,10 @@ extension NANewsTableVC {
         let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier,
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
+            // For expandable label delegate
+            cell.delegate = self
+            cell.setStateForDescription(state: self.states[indexPath.row])
+            
             let news = self.model[indexPath.row]
             
             // TODO: перегружает всю таблицу и ячейки начинают повторяться

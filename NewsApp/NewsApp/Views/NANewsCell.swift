@@ -78,6 +78,7 @@ class NANewsCell: UITableViewCell {
                                                           attributes: [
                                                            NSAttributedString.Key.foregroundColor : UIColor.blue,
                                                            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
+        label.shouldCollapse = true
         
         return label
     }()
@@ -114,6 +115,11 @@ class NANewsCell: UITableViewCell {
         
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
+    }
+    
+    func setStateForDescription(state: Bool) {
+        self.descriptionLabel.collapsed = state
+        self.layoutIfNeeded()
     }
     
     // MARK: - Constraints

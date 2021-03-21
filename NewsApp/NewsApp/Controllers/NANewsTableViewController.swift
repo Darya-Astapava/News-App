@@ -48,8 +48,8 @@ class NANewsTableViewController: UITableViewController {
         navigationItem.hidesSearchBarWhenScrolling = false
         
         self.setupTableView()
+        self.setupRefreshControl()
         self.sendRequest(date: self.date)
-        
     }
     
     // MARK: - Methods
@@ -62,10 +62,16 @@ class NANewsTableViewController: UITableViewController {
                                     successHandler: { [weak self] (model: NAResponseModel) in
                                         self?.handleResponse(model: model)
                                         self?.isMakingRequest = false
+                                        DispatchQueue.main.async {
+                                            self?.tableView.refreshControl?.endRefreshing()
+                                        }
                                     },
                                     errorHandler: { [weak self] (error) in
                                         self?.handleError(error: error)
                                         self?.isMakingRequest = false
+                                        DispatchQueue.main.async {
+                                            self?.tableView.refreshControl?.endRefreshing()
+                                        }
                                     })
     }
     
@@ -77,7 +83,18 @@ class NANewsTableViewController: UITableViewController {
         
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
+    }
+    
+    private func setupRefreshControl() {
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Fetching news",
+                                                            attributes: [NSAttributedString.Key.foregroundColor : UIColor.systemGray2])
+        refreshControl.tintColor = UIColor.systemGray2
         
+        self.tableView.refreshControl = refreshControl
+        refreshControl.addTarget(self,
+                                 action: #selector(self.refresh),
+                                 for: .valueChanged)
     }
     
     private func loadMoreArticles() {
@@ -91,12 +108,10 @@ class NANewsTableViewController: UITableViewController {
     
     // MARK: - Actions
     @objc private func refresh() {
+        self.model = []
+        self.rowCount = 0
         self.date = Date()
         self.sendRequest(date: self.date)
-        
-        DispatchQueue.main.async {
-            self.tableView.refreshControl?.endRefreshing()
-        }
     }
     
     // MARK: - Handlers

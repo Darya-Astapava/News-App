@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIView {
+    // Add several subviews to view.
     func addSubviews(_ views: [UIView]) {
         views.forEach {
             self.addSubview($0)

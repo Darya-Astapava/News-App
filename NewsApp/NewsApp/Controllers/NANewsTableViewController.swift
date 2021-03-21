@@ -10,19 +10,9 @@ import ExpandableLabel
 
 class NANewsTableViewController: UITableViewController {
     // MARK: - Variables
-    private lazy var model: [NANewsModel] = [] {
-        didSet {
-            self.tableView.reloadData()
-            Swift.debugPrint("Reload data")
-        }
-    }
-    
-    private lazy var cellIdentifier: String = NANewsCell.reuseIdentifier
+    private lazy var model: [NANewsModel] = []
     private lazy var date = Date()
     private lazy var dateCount = 1
-    private lazy var page: Int = 1
-    private lazy var articlesCount: Int = 0
-    private lazy var displayedArticlesCount: Int = 0
     private lazy var isMakingRequest: Bool = false
     private lazy var states: [Bool] = []
     
@@ -36,9 +26,10 @@ class NANewsTableViewController: UITableViewController {
     }
     
     // MARK: - Methods
-    private func sendRequest(date: Date, page: Int = 1) {
+    private func sendRequest(date: Date) {
         // For today news
-        let parameters: [String: String] = ["from": date.formatDateToString(), "page": String(page)]
+        let parameters: [String: String] = ["from": date.formatDateToString(),
+                                            "to": date.formatDateToString()]
         
         NANetworking.shared.request(parameters: parameters,
                                     successHandler: { [weak self] (model: NAResponseModel) in
@@ -47,24 +38,51 @@ class NANewsTableViewController: UITableViewController {
                                     },
                                     errorHandler: { [weak self] (error) in
                                         self?.handleError(error: error)
+                                        self?.isMakingRequest = false
                                     })
     }
     
     private func setupTableView() {
+        self.tableView.refreshControl?.addTarget(self, action: #selector(self.refresh),
+                                                 for: .valueChanged)
         self.tableView.register(NANewsCell.self,
-                                forCellReuseIdentifier: self.cellIdentifier)
+                                forCellReuseIdentifier: NANewsCell.reuseIdentifier)
         
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
     }
     
+    private func loadMoreArticles() {
+        self.isMakingRequest = true
+        let newDate = Date(timeInterval: -86400, since: self.date)
+        self.date = newDate
+        self.dateCount += 1
+        
+        self.sendRequest(date: self.date)
+    }
+    
+    // MARK: - Actions
+    @objc private func refresh() {
+        self.date = Date()
+        self.sendRequest(date: self.date)
+        
+        DispatchQueue.main.async {
+            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
+    
     // MARK: - Handlers
     private func handleResponse(model: NAResponseModel) {
         var newModel: [NANewsModel] = []
+        
         model.articles.forEach { (article) in
             newModel.append(article)
         }
-        self.articlesCount = model.totalResults
+        
+        // Compare with 100 because page siza of response limited 100 articles
+        self.rowCount = model.articles.count < 100
+            ? self.rowCount + model.articles.count
+            : self.rowCount + 100
         
         self.model += newModel
         
@@ -72,6 +90,7 @@ class NANewsTableViewController: UITableViewController {
         self.states += statesForNewArticles
         
         Swift.debugPrint("Total articles count - \(articlesCount)")
+        self.tableView.reloadData()
     }
     
     private func handleError(error: NANetworkingErrors) {
@@ -141,6 +160,7 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
         tableView.endUpdates()
     }
     
+extension NANewsTableViewController {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -148,13 +168,13 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
     
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        return self.model.count
+        return self.rowCount
     }
     
     override func tableView(_ tableView: UITableView,
                             cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier,
+        let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
             // For expandable label delegate
@@ -162,32 +182,6 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
             cell.setStateForDescription(state: self.states[indexPath.row])
             
             let news = self.model[indexPath.row]
-            
-            // TODO: перегружает всю таблицу и ячейки начинают повторяться
-            if indexPath.row == self.model.count - 5 {
-                if self.articlesCount > self.displayedArticlesCount,
-                   self.isMakingRequest == false {
-                    self.displayedArticlesCount += 20
-                    if self.displayedArticlesCount < self.articlesCount {
-                        self.page += 1
-                        self.isMakingRequest = true
-                        self.sendRequest(date: self.date, page: self.page)
-                        
-                        Swift.debugPrint("DisplayedArticlesCount - \(self.displayedArticlesCount)")
-                    }
-                }
-                
-                if self.articlesCount == self.model.count, self.dateCount <= 7 {
-                    // TODO: new request with yesterday date and add data to model
-                    self.displayedArticlesCount = 0
-                    self.page = 1
-                    let date = Date(timeInterval: -86400, since: self.date)
-                    self.date = date
-                    self.dateCount += 1
-                    Swift.debugPrint("Date for new request", date, "displayedArticlesCount - \(self.displayedArticlesCount)")
-                    self.sendRequest(date: date)
-                }
-            }
             
             cell.setNews(title: news.title,
                          description: news.description ?? "",
@@ -201,6 +195,12 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
     override func tableView(_ tableView: UITableView,
                             willDisplay cell: UITableViewCell,
                             forRowAt indexPath: IndexPath) {
-        let _ = self.model.count
+
+        // Create request to get new articles when left 10 articles.
+        if indexPath.row == self.rowCount - 10,
+           self.dateCount <= 7,
+           self.isMakingRequest == false {
+            self.loadMoreArticles()
+        }
     }
 }

@@ -14,7 +14,7 @@ class NANetworking {
     // MARK: - Properties
     private let baseURL = "https://newsapi.org/v2/"
     private let path = "everything"
-    private let apiKey = "9c0dc5e64be84dabad65a3656eb7c6f4"
+    private let apiKey = "f87c2dbc642640eaaa1986e82858c7da"
     
     private lazy var session = URLSession(configuration: .default)
     
@@ -22,7 +22,8 @@ class NANetworking {
         "apiKey": self.apiKey,
         "sources": "bbc-news",
         "language": "en",
-        "pageSize": "20"
+        // Limit page size because free developer plan allow to get only 100 articles in one request.
+        "pageSize": "100"
     ]
     
     // MARK: - Initializations

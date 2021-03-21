@@ -17,7 +17,7 @@ struct NAResponseModel: Decodable {
     }
     
     init(from decoder: Decoder) throws {
-        var container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         
         self.status = try container.decode(String.self, forKey: .status)
         self.totalResults = try container.decode(Int.self, forKey: .totalResults)

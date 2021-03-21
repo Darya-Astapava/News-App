@@ -108,6 +108,7 @@
 			isa = PBXGroup;
 			children = (
 				0487F79726036F7D0026F39F /* NANewsCell.swift */,
+				0487F7EB2605CB050026F39F /* NAActivityIndicatorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -278,6 +279,7 @@
 			files = (
 				0487F7DE2603A51C0026F39F /* NAResponseModel.swift in Sources */,
 				0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */,
+				0487F7EC2605CB050026F39F /* NAActivityIndicatorView.swift in Sources */,
 				0487F77826036AE40026F39F /* AppDelegate.swift in Sources */,
 				0487F7A7260375EB0026F39F /* NANewsTableViewController.swift in Sources */,
 				0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */,

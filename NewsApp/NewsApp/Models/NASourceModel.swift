@@ -4,7 +4,7 @@
 //
 //  Created by Дарья Астапова on 19.03.21.
 //
-
+// TODO: - delete if don't need
 struct NASourceModel: Codable {
     let id, name: String
     

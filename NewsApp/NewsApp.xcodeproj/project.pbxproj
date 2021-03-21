@@ -22,6 +22,8 @@
 		0487F7E1260483540026F39F /* NASourceModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E0260483540026F39F /* NASourceModel.swift */; };
 		0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E32604876A0026F39F /* UIImageView+Ex.swift */; };
 		0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7E62604C96A0026F39F /* Date+Ex.swift */; };
+		0487F80826077F4D0026F39F /* NADataModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 0487F80626077F4C0026F39F /* NADataModel.xcdatamodeld */; };
+		0487F80B260787EF0026F39F /* NACoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F80A260787EF0026F39F /* NACoreDataManager.swift */; };
 		265314C9A051106B350D648F /* Pods_NewsApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD4BA845FEDD395A98D8BB7 /* Pods_NewsApp.framework */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +45,8 @@
 		0487F7E0260483540026F39F /* NASourceModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NASourceModel.swift; sourceTree = "<group>"; };
 		0487F7E32604876A0026F39F /* UIImageView+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Ex.swift"; sourceTree = "<group>"; };
 		0487F7E62604C96A0026F39F /* Date+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ex.swift"; sourceTree = "<group>"; };
+		0487F80726077F4C0026F39F /* NADataModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = NADataModel.xcdatamodel; sourceTree = "<group>"; };
+		0487F80A260787EF0026F39F /* NACoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NACoreDataManager.swift; sourceTree = "<group>"; };
 		61BAD6596BA6283813BB3542 /* Pods-NewsApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NewsApp.release.xcconfig"; path = "Target Support Files/Pods-NewsApp/Pods-NewsApp.release.xcconfig"; sourceTree = "<group>"; };
 		6AD4BA845FEDD395A98D8BB7 /* Pods_NewsApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NewsApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -82,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				0487F78F26036B700026F39F /* Networking */,
+				0487F80D26078E210026F39F /* Managers */,
 				0487F7D0260379560026F39F /* Models */,
 				0487F79526036EF10026F39F /* Views */,
 				0487F79626036F000026F39F /* Controllers */,
@@ -108,7 +113,6 @@
 			isa = PBXGroup;
 			children = (
 				0487F79726036F7D0026F39F /* NANewsCell.swift */,
-				0487F7EB2605CB050026F39F /* NAActivityIndicatorView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -137,8 +141,17 @@
 				0487F7CD260376DF0026F39F /* NANewsModel.swift */,
 				0487F7DD2603A51C0026F39F /* NAResponseModel.swift */,
 				0487F7E0260483540026F39F /* NASourceModel.swift */,
+				0487F80626077F4C0026F39F /* NADataModel.xcdatamodeld */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		0487F80D26078E210026F39F /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				0487F80A260787EF0026F39F /* NACoreDataManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		261E8185A4BC81BD9AE07AC7 /* Pods */ = {
@@ -279,9 +292,10 @@
 			files = (
 				0487F7DE2603A51C0026F39F /* NAResponseModel.swift in Sources */,
 				0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */,
-				0487F7EC2605CB050026F39F /* NAActivityIndicatorView.swift in Sources */,
+				0487F80826077F4D0026F39F /* NADataModel.xcdatamodeld in Sources */,
 				0487F77826036AE40026F39F /* AppDelegate.swift in Sources */,
 				0487F7A7260375EB0026F39F /* NANewsTableViewController.swift in Sources */,
+				0487F80B260787EF0026F39F /* NACoreDataManager.swift in Sources */,
 				0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */,
 				0487F79126036B980026F39F /* NANetworking.swift in Sources */,
 				0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */,
@@ -504,6 +518,19 @@
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		0487F80626077F4C0026F39F /* NADataModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				0487F80726077F4C0026F39F /* NADataModel.xcdatamodel */,
+			);
+			currentVersion = 0487F80726077F4C0026F39F /* NADataModel.xcdatamodel */;
+			path = NADataModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 0487F76C26036AE40026F39F /* Project object */;
 }

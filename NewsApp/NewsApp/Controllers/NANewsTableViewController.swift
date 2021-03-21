@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ExpandableLabel
 
 class NANewsTableViewController: UITableViewController {
     // MARK: - Variables
@@ -13,7 +14,7 @@ class NANewsTableViewController: UITableViewController {
     private lazy var date = Date()
     private lazy var dateCount = 1
     private lazy var isMakingRequest: Bool = false
-    private lazy var rowCount = 0
+    private lazy var states: [Bool] = []
     
     // MARK: - Life cycle
     override func viewDidLoad() {
@@ -84,6 +85,11 @@ class NANewsTableViewController: UITableViewController {
             : self.rowCount + 100
         
         self.model += newModel
+        
+        let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
+        self.states += statesForNewArticles
+        
+        Swift.debugPrint("Total articles count - \(articlesCount)")
         self.tableView.reloadData()
     }
     
@@ -117,6 +123,43 @@ class NANewsTableViewController: UITableViewController {
     
 }
 
+extension NANewsTableViewController: ExpandableLabelDelegate {
+    
+    // MARK: - Expandable Label Delegate Methods
+    func willExpandLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("willExpandLabel")
+        self.tableView.beginUpdates()
+    }
+    
+    func didExpandLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("didExpandLabel")
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
+            self.states[indexPath.row] = false
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
+        }
+        self.tableView.endUpdates()
+    }
+    
+    func willCollapseLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("willCollapseLabel")
+        self.tableView.beginUpdates()
+    }
+    
+    func didCollapseLabel(_ label: ExpandableLabel) {
+        Swift.debugPrint("didCollapseLabel")
+        let point = label.convert(CGPoint.zero, to: tableView)
+        if let indexPath = tableView.indexPathForRow(at: point) as IndexPath? {
+            self.states[indexPath.row] = true
+            DispatchQueue.main.async { [weak self] in
+                self?.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            }
+        }
+        tableView.endUpdates()
+    }
+    
 extension NANewsTableViewController {
     // MARK: - Table view data source
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -134,6 +177,10 @@ extension NANewsTableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
+            // For expandable label delegate
+            cell.delegate = self
+            cell.setStateForDescription(state: self.states[indexPath.row])
+            
             let news = self.model[indexPath.row]
             
             cell.setNews(title: news.title,
@@ -148,6 +195,7 @@ extension NANewsTableViewController {
     override func tableView(_ tableView: UITableView,
                             willDisplay cell: UITableViewCell,
                             forRowAt indexPath: IndexPath) {
+
         // Create request to get new articles when left 10 articles.
         if indexPath.row == self.rowCount - 10,
            self.dateCount <= 7,

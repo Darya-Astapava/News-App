@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import ExpandableLabel
 
 class NANewsCell: UITableViewCell {
     // MARK: - Static Variables
@@ -63,19 +64,21 @@ class NANewsCell: UITableViewCell {
         return label
     }()
     
-    private lazy var descriptionLabel: UILabel = {
-        let label = UILabel()
+    private lazy var descriptionLabel: ExpandableLabel = {
+        let label = ExpandableLabel()
         
-        label.font = .systemFont(ofSize: 16)
         label.textColor = .gray
         label.numberOfLines = 3
-        label.lineBreakMode = .byWordWrapping
-        
-        return label
-    }()
-    
-    private lazy var moreLabel: UILabel = {
-        let label = UILabel()
+        label.ellipsis = NSAttributedString(string: "...")
+        label.collapsedAttributedLink = NSAttributedString(string: "Show More",
+                                                           attributes: [
+                                                            NSAttributedString.Key.foregroundColor : UIColor.blue,
+                                                            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
+        label.expandedAttributedLink = NSAttributedString(string: "   Show Less",
+                                                          attributes: [
+                                                           NSAttributedString.Key.foregroundColor : UIColor.blue,
+                                                           NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
+        label.shouldCollapse = true
         
         return label
     }()
@@ -96,9 +99,8 @@ class NANewsCell: UITableViewCell {
         self.containerView.addSubviews([self.newsImageView,
                                         self.dateLabel,
                                         self.titleLabel,
-                                        self.descriptionLabel//,
-                                        // self.moreLabel
-        ])
+                                        self.descriptionLabel])
+        
         self.constraints()
         
         self.selectionStyle = .none
@@ -110,17 +112,16 @@ class NANewsCell: UITableViewCell {
                  date: String,
                  imageURL: String?) {
         self.titleLabel.text = title
-        self.descriptionLabel.text = description
         self.dateLabel.text = date
+        self.descriptionLabel.text = description
+        
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
     }
     
-    override func prepareForReuse() {
-        self.newsImageView.image = UIImage(named: "defaultImage")
-        self.titleLabel.text = ""
-        self.descriptionLabel.text = ""
-        self.dateLabel.text = ""
+    func setStateForDescription(state: Bool) {
+        self.descriptionLabel.collapsed = state
+        self.layoutIfNeeded()
     }
     
     // MARK: - Constraints
@@ -148,14 +149,5 @@ class NANewsCell: UITableViewCell {
             make.top.equalTo(self.titleLabel.snp.bottom).offset(self.contentOffset)
             make.left.right.bottom.equalToSuperview().inset(self.edgeInsets)
         }
-        
-        //        self.moreLabel.snp.updateConstraints { (make) in
-        //            make.left.equalTo(self.descriptionLabel.snp.right).offset(self.contentOffset)
-        //            make.right.bottom.equalToSuperview()
-        //        }
-    }
-    
-    private func showMore() {
-        // TODO
     }
 }

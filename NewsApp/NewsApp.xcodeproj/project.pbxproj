@@ -12,9 +12,9 @@
 		0487F78426036AE60026F39F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0487F78226036AE60026F39F /* LaunchScreen.storyboard */; };
 		0487F79126036B980026F39F /* NANetworking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F79026036B980026F39F /* NANetworking.swift */; };
 		0487F79826036F7D0026F39F /* NANewsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F79726036F7D0026F39F /* NANewsCell.swift */; };
-		0487F79D26036FF40026F39F /* BuildFile in Frameworks */ = {isa = PBXBuildFile; productRef = 0487F79C26036FF40026F39F /* SwiftPackageProductDependency */; };
+		0487F79D26036FF40026F39F /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 0487F79C26036FF40026F39F /* SnapKit */; };
 		0487F7A1260371EE0026F39F /* UIView+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7A0260371EE0026F39F /* UIView+Ex.swift */; };
-		0487F7A7260375EB0026F39F /* NANewsTableVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7A6260375EB0026F39F /* NANewsTableVC.swift */; };
+		0487F7A7260375EB0026F39F /* NANewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7A6260375EB0026F39F /* NANewsTableViewController.swift */; };
 		0487F7CE260376DF0026F39F /* NANewsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7CD260376DF0026F39F /* NANewsModel.swift */; };
 		0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7D2260383350026F39F /* NANetworkingErrors.swift */; };
 		0487F7D62603880C0026F39F /* NANetworking+Ex.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0487F7D52603880C0026F39F /* NANetworking+Ex.swift */; };
@@ -35,7 +35,7 @@
 		0487F79026036B980026F39F /* NANetworking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANetworking.swift; sourceTree = "<group>"; };
 		0487F79726036F7D0026F39F /* NANewsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsCell.swift; sourceTree = "<group>"; };
 		0487F7A0260371EE0026F39F /* UIView+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ex.swift"; sourceTree = "<group>"; };
-		0487F7A6260375EB0026F39F /* NANewsTableVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsTableVC.swift; sourceTree = "<group>"; };
+		0487F7A6260375EB0026F39F /* NANewsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsTableViewController.swift; sourceTree = "<group>"; };
 		0487F7CD260376DF0026F39F /* NANewsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANewsModel.swift; sourceTree = "<group>"; };
 		0487F7D2260383350026F39F /* NANetworkingErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NANetworkingErrors.swift; sourceTree = "<group>"; };
 		0487F7D52603880C0026F39F /* NANetworking+Ex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NANetworking+Ex.swift"; sourceTree = "<group>"; };
@@ -52,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0487F79D26036FF40026F39F /* BuildFile in Frameworks */,
+				0487F79D26036FF40026F39F /* SnapKit in Frameworks */,
 				265314C9A051106B350D648F /* Pods_NewsApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,7 +115,7 @@
 		0487F79626036F000026F39F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				0487F7A6260375EB0026F39F /* NANewsTableVC.swift */,
+				0487F7A6260375EB0026F39F /* NANewsTableViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -146,7 +146,6 @@
 				006B28F233448083BA1C4C4C /* Pods-NewsApp.debug.xcconfig */,
 				61BAD6596BA6283813BB3542 /* Pods-NewsApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -177,7 +176,7 @@
 			);
 			name = NewsApp;
 			packageProductDependencies = (
-				0487F79C26036FF40026F39F /* SwiftPackageProductDependency */,
+				0487F79C26036FF40026F39F /* SnapKit */,
 			);
 			productName = NewsApp;
 			productReference = 0487F77426036AE40026F39F /* NewsApp.app */;
@@ -207,7 +206,7 @@
 			);
 			mainGroup = 0487F76B26036AE40026F39F;
 			packageReferences = (
-				0487F79B26036FF40026F39F /* RemoteSwiftPackageReference */,
+				0487F79B26036FF40026F39F /* XCRemoteSwiftPackageReference "SnapKit" */,
 			);
 			productRefGroup = 0487F77526036AE40026F39F /* Products */;
 			projectDirPath = "";
@@ -280,7 +279,7 @@
 				0487F7DE2603A51C0026F39F /* NAResponseModel.swift in Sources */,
 				0487F7D3260383350026F39F /* NANetworkingErrors.swift in Sources */,
 				0487F77826036AE40026F39F /* AppDelegate.swift in Sources */,
-				0487F7A7260375EB0026F39F /* NANewsTableVC.swift in Sources */,
+				0487F7A7260375EB0026F39F /* NANewsTableViewController.swift in Sources */,
 				0487F7E42604876A0026F39F /* UIImageView+Ex.swift in Sources */,
 				0487F79126036B980026F39F /* NANetworking.swift in Sources */,
 				0487F7E72604C96A0026F39F /* Date+Ex.swift in Sources */,
@@ -486,7 +485,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		0487F79B26036FF40026F39F /* RemoteSwiftPackageReference */ = {
+		0487F79B26036FF40026F39F /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
 			requirement = {
@@ -497,9 +496,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		0487F79C26036FF40026F39F /* SwiftPackageProductDependency */ = {
+		0487F79C26036FF40026F39F /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 0487F79B26036FF40026F39F /* RemoteSwiftPackageReference */;
+			package = 0487F79B26036FF40026F39F /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
 		};
 /* End XCSwiftPackageProductDependency section */

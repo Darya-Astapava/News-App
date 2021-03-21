@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let window = self.window {
             let navigationController = UINavigationController()
-            navigationController.viewControllers = [NANewsTableVC()]
+            navigationController.viewControllers = [NANewsTableViewController()]
             
             window.rootViewController = navigationController
             window.makeKeyAndVisible()

@@ -1,5 +1,5 @@
 //
-//  NANewsTableVC.swift
+//  NANewsTableViewController.swift
 //  NewsApp
 //
 //  Created by Дарья Астапова on 18.03.21.

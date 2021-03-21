@@ -16,19 +16,45 @@ class NANewsTableViewController: UITableViewController {
     private lazy var isMakingRequest: Bool = false
     private lazy var states: [Bool] = []
     private lazy var rowCount = 0
+    private lazy var filteredNews: [NANewsModel] = []
+    
+    private var searchBarIsEmpty: Bool {
+        guard let text = searchController.searchBar.text else { return false }
+        return text.isEmpty
+    }
+    
+    private var isFiltering: Bool {
+        return searchController.isActive && !searchBarIsEmpty
+    }
+    
+    private lazy var searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search"
+        self.navigationController?.navigationItem.searchController = searchController
+        definesPresentationContext = true
+        searchController.searchBar.delegate = self
+        
+        return searchController
+    }()
     
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.searchController = self.searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
         self.setupTableView()
-        Swift.debugPrint("First request")
         self.sendRequest(date: self.date)
+        
     }
     
     // MARK: - Methods
     private func sendRequest(date: Date) {
-        // For today news
+        // Date for request
         let parameters: [String: String] = ["from": date.formatDateToString(),
                                             "to": date.formatDateToString()]
         
@@ -51,6 +77,7 @@ class NANewsTableViewController: UITableViewController {
         
         self.tableView.separatorStyle = .none
         self.tableView.tableFooterView = UIView()
+        
     }
     
     private func loadMoreArticles() {
@@ -167,7 +194,11 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
     
     override func tableView(_ tableView: UITableView,
                             numberOfRowsInSection section: Int) -> Int {
-        return self.rowCount
+        if isFiltering {
+            return self.filteredNews.count
+        } else {
+            return self.rowCount
+        }
     }
     
     override func tableView(_ tableView: UITableView,
@@ -180,8 +211,10 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
 
             cell.setStateForDescription(state: self.states[indexPath.row])
             
-            let news = self.model[indexPath.row]
-            
+            let news: NANewsModel = isFiltering
+                ? self.filteredNews[indexPath.row]
+                : self.model[indexPath.row]
+
             cell.setNews(title: news.title,
                          description: news.description ?? "",
                          date: news.publishedAt,
@@ -202,4 +235,22 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
             self.loadMoreArticles()
         }
     }
+}
+
+extension NANewsTableViewController: UISearchResultsUpdating,
+                                     UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = self.searchController.searchBar.text else { return }
+        filterContentForSearchText(text)
+    }
+    
+    private func filterContentForSearchText(_ searchText: String) {
+        
+        self.filteredNews = self.model.filter({ (news: NANewsModel) -> Bool in
+            return news.title.lowercased().contains(searchText.lowercased())
+        })
+        
+        tableView.reloadData()
+    }
+
 }

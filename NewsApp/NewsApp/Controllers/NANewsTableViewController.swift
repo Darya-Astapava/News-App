@@ -129,6 +129,7 @@ class NANewsTableViewController: UITableViewController {
         
         self.model += newModel
         
+        // For Show more
         let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
         self.states += statesForNewArticles
         

@@ -5,7 +5,7 @@
 //  Created by Дарья Астапова on 21.03.21.
 //
 
-import Foundation
+import UIKit
 import CoreData
 
 class NACoreDataManager {
@@ -35,14 +35,48 @@ class NACoreDataManager {
     }
     
     // MARK: - Methods
-    func writeData(with name: String) {
-        guard let entity = NSEntityDescription.entity(forEntityName: name,
-                                                      in: self.context) else { return }
-        let newsObject = NSManagedObject(entity: entity,
-                                         insertInto: self.context)
-        newsObject.setValue("", forKeyPath: "title")
-        newsObject.setValue("", forKeyPath: "newsDescription")
-        newsObject.setValue("", forKeyPath: "image")
-        newsObject.setValue("", forKeyPath: "publishedAt")
+    func writeData(with object: NANewsModel) {
+        let news = News(context: self.context)
+        news.title = object.title
+        news.newsDescription = object.description ?? ""
+        news.publishedAt = object.publishedAt
+        
+        // Create data image object from string with url and set to news entity.
+        self.transformUrlToPngData(url: object.urlToImage) { (image) in
+            news.image = image
+        }
+        
+        do {
+            try self.context.save()
+            Swift.debugPrint("Success store data.")
+        } catch let error as NSError {
+            Swift.debugPrint("Couldn't save data. \(error), \(error.userInfo)")
+        }
+    }
+    
+    func readData(completionHandler: (([News]) -> Void)?) {
+        let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "News")
+        do {
+            guard let result = try self.context.fetch(fetchRequest) as? [News] else { return }
+            completionHandler?(result)
+        } catch {
+            Swift.debugPrint("Couldn't read data. \(error.localizedDescription)")
+        }
+    }
+    
+    // Transform image url from string to data object.
+    private func transformUrlToPngData(url: String?, completionHandler: ((Data)-> Void)?) {
+        guard let url = url else { return }
+        
+        DispatchQueue.global().async {
+            guard let url = URL(string: url),
+                  let data = try? Data(contentsOf: url),
+                  let image = UIImage(data: data),
+                  let pngData = image.pngData() else { return }
+            
+            DispatchQueue.main.async {
+                completionHandler?(pngData)
+            }
+        }
     }
 }

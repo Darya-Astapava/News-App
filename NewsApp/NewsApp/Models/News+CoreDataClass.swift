@@ -2,7 +2,7 @@
 //  News+CoreDataClass.swift
 //  
 //
-//  Created by Дарья Астапова on 21.03.21.
+//  Created by Дарья Астапова on 22.03.21.
 //
 //
 

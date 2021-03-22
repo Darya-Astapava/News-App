@@ -146,8 +146,11 @@ class NANewsTableViewController: UITableViewController {
             // Set image using title
             news.forEach { [weak self] (article) in
                 guard let self = self else { return }
+                
                 Swift.debugPrint("Article title from Core Data - \(article.title ?? "")")
-                guard let index = self.model.firstIndex(where: { $0.title == article.title }) else { return }
+                
+                guard let index = self.model.firstIndex(
+                        where: { $0.title == article.title }) else { return }
                 self.model[index].pngData = article.image
             }
         }
@@ -217,7 +220,7 @@ extension NANewsTableViewController {
                          imageURL: news.urlToImage,
                          pngImage: news.pngData)
             
-            Swift.debugPrint("title: \(news.title), description: \(news.description ?? ""), date: \(news.publishedAt ), imageURL: \(news.urlToImage), pngImage: \(news.pngData)")
+            Swift.debugPrint("title: \(news.title), description: \(news.description ?? ""), date: \(news.publishedAt ), imageURL: \(String(describing: news.urlToImage)), pngImage: \(String(describing: news.pngData))")
         }
         
         return cell

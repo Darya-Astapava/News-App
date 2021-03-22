@@ -4,12 +4,14 @@
 //
 //  Created by Дарья Астапова on 18.03.21.
 //
+import Foundation
 
 struct NANewsModel: Codable {
     var title: String
     var description: String?
     var urlToImage: String?
     var publishedAt: String
+    var pngData: Data? = nil
     
     enum CodingKeys: CodingKey {
         case title, description, urlToImage, publishedAt

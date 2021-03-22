@@ -38,8 +38,6 @@ class NACoreDataManager {
     func writeData(with object: NANewsModel) {
         let news = News(context: self.context)
         news.title = object.title
-        news.newsDescription = object.description ?? ""
-        news.publishedAt = object.publishedAt
         
         // Create data image object from string with url and set to news entity.
         self.transformUrlToPngData(url: object.urlToImage) { (image) in
@@ -62,6 +60,10 @@ class NACoreDataManager {
         } catch {
             Swift.debugPrint("Couldn't read data. \(error.localizedDescription)")
         }
+    }
+    
+    func removeData() {
+        // TODO: remove
     }
     
     // Transform image url from string to data object.

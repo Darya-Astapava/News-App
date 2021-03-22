@@ -14,9 +14,9 @@ class NANewsTableViewController: UITableViewController {
     private lazy var date = Date()
     private lazy var dateCount = 1
     private lazy var isMakingRequest: Bool = false
-    private lazy var states: [Bool] = []
     private lazy var rowCount = 0
     private lazy var filteredNews: [NANewsModel] = []
+    private lazy var states: [Bool] = []
     
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return false }
@@ -27,6 +27,7 @@ class NANewsTableViewController: UITableViewController {
         return searchController.isActive && !searchBarIsEmpty
     }
     
+    // MARK: - GUI Variables
     private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         
@@ -119,21 +120,37 @@ class NANewsTableViewController: UITableViewController {
         var newModel: [NANewsModel] = []
         
         model.articles.forEach { (article) in
+            // Set table from API
             newModel.append(article)
+            
+            // Store image and title into CoreData
+            NACoreDataManager.shared.writeData(with: article)
         }
         
         // Compare with 100 because page siza of response limited 100 articles
         self.rowCount = model.articles.count < 100
             ? self.rowCount + model.articles.count
             : self.rowCount + 100
-        
+
         self.model += newModel
-        
+
         // For Show more
         let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
         self.states += statesForNewArticles
-        
+
         self.tableView.reloadData()
+    }
+    
+    private func setImageFromCoreDataToNewsModel() {
+        NACoreDataManager.shared.readData { (news) in
+            // Set image using title
+            news.forEach { [weak self] (article) in
+                guard let self = self else { return }
+                Swift.debugPrint("Article title from Core Data - \(article.title ?? "")")
+                guard let index = self.model.firstIndex(where: { $0.title == article.title }) else { return }
+                self.model[index].pngData = article.image
+            }
+        }
     }
     
     private func handleError(error: NANetworkingErrors) {
@@ -166,9 +183,79 @@ class NANewsTableViewController: UITableViewController {
     
 }
 
-extension NANewsTableViewController: ExpandableLabelDelegate {
+extension NANewsTableViewController {
+    // MARK: - Table view data source
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
     
-    // MARK: - Expandable Label Delegate Methods
+    override func tableView(_ tableView: UITableView,
+                            numberOfRowsInSection section: Int) -> Int {
+        if isFiltering {
+            return self.filteredNews.count
+        } else {
+            return self.rowCount
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView,
+                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
+                                                 for: indexPath)
+        if let cell = cell as? NANewsCell {
+            // For expandable label delegate
+            cell.setStateForDescription(state: self.states[indexPath.row])
+            
+            let news: NANewsModel = isFiltering
+                ? self.filteredNews[indexPath.row]
+                : self.model[indexPath.row]
+            
+            cell.setNews(title: news.title ,
+                         description: news.description ?? "",
+                         date: news.publishedAt ,
+                         imageURL: news.urlToImage,
+                         pngImage: news.pngData)
+            
+            Swift.debugPrint("title: \(news.title), description: \(news.description ?? ""), date: \(news.publishedAt ), imageURL: \(news.urlToImage), pngImage: \(news.pngData)")
+        }
+        
+        return cell
+    }
+    
+    override func tableView(_ tableView: UITableView,
+                            willDisplay cell: UITableViewCell,
+                            forRowAt indexPath: IndexPath) {
+        
+        // Create request to get new articles when left 10 articles.
+        if indexPath.row == self.rowCount - 10,
+           self.dateCount <= 7,
+           self.isMakingRequest == false {
+            self.loadMoreArticles()
+        }
+    }
+}
+
+// MARK: - Search bar delegate
+extension NANewsTableViewController: UISearchResultsUpdating,
+                                     UISearchBarDelegate {
+    func updateSearchResults(for searchController: UISearchController) {
+        guard let text = self.searchController.searchBar.text else { return }
+        filterContentForSearchText(text)
+    }
+    
+    private func filterContentForSearchText(_ searchText: String) {
+        
+//        self.filteredNews = self.model.filter({ (news: NANewsModel) -> Bool in
+//            return news.title.lowercased().contains(searchText.lowercased())
+//        })
+        
+        tableView.reloadData()
+    }
+}
+
+// MARK: - Expandable Label Delegate Methods
+extension NANewsTableViewController: ExpandableLabelDelegate {
     func willExpandLabel(_ label: ExpandableLabel) {
         Swift.debugPrint("willExpandLabel")
         self.tableView.beginUpdates()
@@ -202,71 +289,4 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
         }
         tableView.endUpdates()
     }
-    
-    // MARK: - Table view data source
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-    
-    override func tableView(_ tableView: UITableView,
-                            numberOfRowsInSection section: Int) -> Int {
-        if isFiltering {
-            return self.filteredNews.count
-        } else {
-            return self.rowCount
-        }
-    }
-    
-    override func tableView(_ tableView: UITableView,
-                            cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
-                                                 for: indexPath)
-        if let cell = cell as? NANewsCell {
-            // For expandable label delegate
-
-            cell.setStateForDescription(state: self.states[indexPath.row])
-            
-            let news: NANewsModel = isFiltering
-                ? self.filteredNews[indexPath.row]
-                : self.model[indexPath.row]
-
-            cell.setNews(title: news.title,
-                         description: news.description ?? "",
-                         date: news.publishedAt,
-                         imageURL: news.urlToImage)
-        }
-        
-        return cell
-    }
-    
-    override func tableView(_ tableView: UITableView,
-                            willDisplay cell: UITableViewCell,
-                            forRowAt indexPath: IndexPath) {
-
-        // Create request to get new articles when left 10 articles.
-        if indexPath.row == self.rowCount - 10,
-           self.dateCount <= 7,
-           self.isMakingRequest == false {
-            self.loadMoreArticles()
-        }
-    }
-}
-
-extension NANewsTableViewController: UISearchResultsUpdating,
-                                     UISearchBarDelegate {
-    func updateSearchResults(for searchController: UISearchController) {
-        guard let text = self.searchController.searchBar.text else { return }
-        filterContentForSearchText(text)
-    }
-    
-    private func filterContentForSearchText(_ searchText: String) {
-        
-        self.filteredNews = self.model.filter({ (news: NANewsModel) -> Bool in
-            return news.title.lowercased().contains(searchText.lowercased())
-        })
-        
-        tableView.reloadData()
-    }
-
 }

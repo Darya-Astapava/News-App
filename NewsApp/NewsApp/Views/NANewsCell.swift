@@ -110,13 +110,17 @@ class NANewsCell: UITableViewCell {
     func setNews(title: String,
                  description: String,
                  date: String,
-                 imageURL: String?) {
+                 imageURL: String?,
+                 pngImage: Data?) {
         self.titleLabel.text = title
         self.dateLabel.text = date
         self.descriptionLabel.text = description
         
-        guard let url = imageURL else { return }
-        self.newsImageView.load(with: url)
+        if let url = imageURL {
+            self.newsImageView.load(with: url)
+        } else if let image = pngImage {
+            self.newsImageView.image = UIImage(data: image)
+        }
     }
     
     func setStateForDescription(state: Bool) {

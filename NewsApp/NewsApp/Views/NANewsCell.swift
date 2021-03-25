@@ -17,6 +17,7 @@ class NANewsCell: UITableViewCell {
     private let edgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
     private let contentOffset: CGFloat = 10
     private let imageHeight: CGFloat = 150
+    weak var delegate: ExpandableLabelDelegate?
     
     // MARK: - GUI Variables
     private lazy var containerView: UIView = {
@@ -64,21 +65,27 @@ class NANewsCell: UITableViewCell {
         return label
     }()
     
-    private lazy var descriptionLabel: ExpandableLabel = {
+    lazy var descriptionLabel: ExpandableLabel = {
         let label = ExpandableLabel()
         
         label.textColor = .gray
         label.numberOfLines = 3
         label.ellipsis = NSAttributedString(string: "...")
+        label.setLessLinkWith(lessLink: "   Show Less",
+                              attributes: [
+                                NSAttributedString.Key.foregroundColor : UIColor.blue,
+                                NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)],
+                              position: .left)
         label.collapsedAttributedLink = NSAttributedString(string: "Show More",
                                                            attributes: [
                                                             NSAttributedString.Key.foregroundColor : UIColor.blue,
                                                             NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
-        label.expandedAttributedLink = NSAttributedString(string: "   Show Less",
-                                                          attributes: [
-                                                           NSAttributedString.Key.foregroundColor : UIColor.blue,
-                                                           NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
-        label.shouldCollapse = true
+//        label.expandedAttributedLink = NSAttributedString(string: "   Show Less",
+//                                                          attributes: [
+//                                                           NSAttributedString.Key.foregroundColor : UIColor.blue,
+//                                                           NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
+       // label.shouldCollapse = true
+       // label.collapsed = false
         
         return label
     }()
@@ -121,13 +128,17 @@ class NANewsCell: UITableViewCell {
     
     func setStateForDescription(state: Bool) {
         self.descriptionLabel.collapsed = state
+        Swift.debugPrint("setStateForDescription")
         self.layoutIfNeeded()
     }
     
     override func prepareForReuse() {
+        super.prepareForReuse()
+        
         self.titleLabel.text = ""
         self.dateLabel.text = ""
         self.descriptionLabel.text = ""
+        self.descriptionLabel.collapsed = true
     }
     
     private func formatDate(date: String) -> String {
@@ -142,6 +153,7 @@ class NANewsCell: UITableViewCell {
         
         return String(clearDate)
     }
+    
     // MARK: - Constraints
     private func constraints() {
         self.containerView.snp.updateConstraints { (make) in

@@ -50,6 +50,9 @@ class NANewsTableViewController: UITableViewController {
         self.setupTableView()
         self.setupRefreshControl()
         self.sendRequest(date: self.date)
+        
+        tableView.estimatedRowHeight = 44
+        tableView.rowHeight = UITableView.automaticDimension
     }
     
     // MARK: - Methods
@@ -222,14 +225,18 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
+            
             // For expandable label delegate
-
-            cell.setStateForDescription(state: self.states[indexPath.row])
+            cell.descriptionLabel.delegate = self
+            cell.layoutIfNeeded()
+            cell.descriptionLabel.shouldCollapse = true
+            cell.descriptionLabel.collapsed = true //states[indexPath.row]
+            //  cell.setStateForDescription(state: self.states[indexPath.row])
             
             let news: NANewsModel = isFiltering
                 ? self.filteredNews[indexPath.row]
                 : self.model[indexPath.row]
-
+            
             cell.setNews(title: news.title,
                          description: news.description ?? "",
                          date: news.publishedAt,
@@ -242,12 +249,34 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
     override func tableView(_ tableView: UITableView,
                             willDisplay cell: UITableViewCell,
                             forRowAt indexPath: IndexPath) {
-
+        
         // Create request to get new articles when left 10 articles.
         if indexPath.row == self.rowCount - 10,
            self.dateCount <= 7,
            self.isMakingRequest == false {
             self.loadMoreArticles()
+        }
+    }
+    
+    override func tableView(_ tableView: UITableView,
+                            didSelectRowAt indexPath: IndexPath) {
+        let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
+                                                 for: indexPath)
+        if let cell = cell as? NANewsCell {
+            Swift.debugPrint("Touched cell")
+            
+            if cell.descriptionLabel.collapsed == false {
+                Swift.debugPrint("collapsed == false")
+                cell.delegate?.willCollapseLabel(cell.descriptionLabel)
+                cell.descriptionLabel.collapsed = true
+                cell.delegate?.didCollapseLabel(cell.descriptionLabel)
+                cell.setNeedsDisplay()
+            } else {
+                Swift.debugPrint("else")
+                cell.descriptionLabel.delegate?.willExpandLabel(cell.descriptionLabel)
+                cell.descriptionLabel.collapsed = false
+                cell.descriptionLabel.delegate?.didExpandLabel(cell.descriptionLabel)
+            }
         }
     }
 }
@@ -267,5 +296,5 @@ extension NANewsTableViewController: UISearchResultsUpdating,
         
         tableView.reloadData()
     }
-
+    
 }

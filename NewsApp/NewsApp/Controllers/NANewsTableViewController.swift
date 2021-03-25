@@ -17,6 +17,7 @@ class NANewsTableViewController: UITableViewController {
     private lazy var states: [Bool] = []
     private lazy var rowCount = 0
     private lazy var filteredNews: [NANewsModel] = []
+    private lazy var isFirstLoad: Bool = true
     
     private var searchBarIsEmpty: Bool {
         guard let text = searchController.searchBar.text else { return false }
@@ -53,6 +54,7 @@ class NANewsTableViewController: UITableViewController {
     }
     
     // MARK: - Methods
+    /// Pull articles with a passed date.
     private func sendRequest(date: Date) {
         // Date for request
         let parameters: [String: String] = ["from": date.formatDateToString(),
@@ -88,7 +90,9 @@ class NANewsTableViewController: UITableViewController {
     private func setupRefreshControl() {
         let refreshControl = UIRefreshControl()
         refreshControl.attributedTitle = NSAttributedString(string: "Fetching news",
-                                                            attributes: [NSAttributedString.Key.foregroundColor : UIColor.systemGray2])
+                                                            attributes: [
+                                                                NSAttributedString.Key.foregroundColor : UIColor.systemGray2
+                                                            ])
         refreshControl.tintColor = UIColor.systemGray2
         
         self.tableView.refreshControl = refreshControl
@@ -97,6 +101,7 @@ class NANewsTableViewController: UITableViewController {
                                  for: .valueChanged)
     }
     
+    /// Load articles from the previous day.
     private func loadMoreArticles() {
         self.isMakingRequest = true
         let newDate = Date(timeInterval: -86400, since: self.date)
@@ -107,6 +112,7 @@ class NANewsTableViewController: UITableViewController {
     }
     
     // MARK: - Actions
+    /// Refresh articles
     @objc private func refresh() {
         self.model = []
         self.rowCount = 0
@@ -115,6 +121,7 @@ class NANewsTableViewController: UITableViewController {
     }
     
     // MARK: - Handlers
+    /// Handle passed data model and reload table data.
     private func handleResponse(model: NAResponseModel) {
         var newModel: [NANewsModel] = []
         
@@ -162,11 +169,9 @@ class NANewsTableViewController: UITableViewController {
         
         self.present(alert, animated: true)
     }
-    
 }
 
 extension NANewsTableViewController: ExpandableLabelDelegate {
-    
     // MARK: - Expandable Label Delegate Methods
     func willExpandLabel(_ label: ExpandableLabel) {
         Swift.debugPrint("willExpandLabel")
@@ -222,14 +227,14 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: NANewsCell.reuseIdentifier,
                                                  for: indexPath)
         if let cell = cell as? NANewsCell {
+            
             // For expandable label delegate
-
             cell.setStateForDescription(state: self.states[indexPath.row])
             
             let news: NANewsModel = isFiltering
                 ? self.filteredNews[indexPath.row]
                 : self.model[indexPath.row]
-
+            
             cell.setNews(title: news.title,
                          description: news.description ?? "",
                          date: news.publishedAt,
@@ -242,7 +247,6 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
     override func tableView(_ tableView: UITableView,
                             willDisplay cell: UITableViewCell,
                             forRowAt indexPath: IndexPath) {
-
         // Create request to get new articles when left 10 articles.
         if indexPath.row == self.rowCount - 10,
            self.dateCount <= 7,
@@ -252,20 +256,20 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
     }
 }
 
+// MARK: - Search Bar Delegate
 extension NANewsTableViewController: UISearchResultsUpdating,
                                      UISearchBarDelegate {
+    
     func updateSearchResults(for searchController: UISearchController) {
         guard let text = self.searchController.searchBar.text else { return }
         filterContentForSearchText(text)
     }
     
     private func filterContentForSearchText(_ searchText: String) {
-        
         self.filteredNews = self.model.filter({ (news: NANewsModel) -> Bool in
             return news.title.lowercased().contains(searchText.lowercased())
         })
         
         tableView.reloadData()
     }
-
 }

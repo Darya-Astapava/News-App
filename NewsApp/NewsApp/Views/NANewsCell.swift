@@ -112,8 +112,8 @@ class NANewsCell: UITableViewCell {
                  date: String,
                  imageURL: String?) {
         self.titleLabel.text = title
-        self.dateLabel.text = date
         self.descriptionLabel.text = description
+        self.dateLabel.text = self.formatDate(date: date)
         
         guard let url = imageURL else { return }
         self.newsImageView.load(with: url)
@@ -130,6 +130,18 @@ class NANewsCell: UITableViewCell {
         self.descriptionLabel.text = ""
     }
     
+    private func formatDate(date: String) -> String {
+        var clearDate = Array(date)
+        
+        for _ in 1...4 {
+            clearDate.removeLast()
+        }
+        
+        clearDate.removeAll(where: { $0 == "T" })
+        clearDate.insert(" ", at: 10)
+        
+        return String(clearDate)
+    }
     // MARK: - Constraints
     private func constraints() {
         self.containerView.snp.updateConstraints { (make) in

@@ -36,8 +36,6 @@ class NANetworking {
                  errorHandler: @escaping (NANetworkingErrors) -> Void) {
         // Add necessary parameters to apiKey
         var urlParameters = self.parameters
-        
-        // TODO: - thinking about passing only one parameter "from". We don't need to pass more parameters.
         parameters.forEach { urlParameters[$0.key] = $0.value }
         
         // Generate url with baseUrl, path and parameters
@@ -48,8 +46,8 @@ class NANetworking {
             return
         }
         
-        Swift.debugPrint("Full url - ", fullUrl)
         let request = URLRequest(url: fullUrl)
+        
         let dataTask = self.session.dataTask(with: request) { data, response, error in
             if let error = error {
                 // Network error handling
@@ -68,8 +66,6 @@ class NANetworking {
                             successHandler(model)
                         }
                     } catch let error {
-                        Swift.debugPrint("case 200..<300 catch")
-                        
                         DispatchQueue.main.async {
                             errorHandler(.parsingError(error: error))
                         }

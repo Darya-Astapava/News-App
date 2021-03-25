@@ -17,6 +17,7 @@ class NANewsCell: UITableViewCell {
     private let edgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 20, right: 20)
     private let contentOffset: CGFloat = 10
     private let imageHeight: CGFloat = 150
+    private lazy var isFirstLoad = true
     
     // MARK: - GUI Variables
     private lazy var containerView: UIView = {
@@ -64,11 +65,10 @@ class NANewsCell: UITableViewCell {
         return label
     }()
     
-    private lazy var descriptionLabel: ExpandableLabel = {
+    lazy var descriptionLabel: ExpandableLabel = {
         let label = ExpandableLabel()
         
         label.textColor = .gray
-        label.numberOfLines = 3
         label.ellipsis = NSAttributedString(string: "...")
         label.collapsedAttributedLink = NSAttributedString(string: "Show More",
                                                            attributes: [
@@ -79,6 +79,8 @@ class NANewsCell: UITableViewCell {
                                                            NSAttributedString.Key.foregroundColor : UIColor.blue,
                                                            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)])
         label.shouldCollapse = true
+        label.collapsed = false
+        
         
         return label
     }()
@@ -100,9 +102,7 @@ class NANewsCell: UITableViewCell {
                                         self.dateLabel,
                                         self.titleLabel,
                                         self.descriptionLabel])
-        
         self.constraints()
-        
         self.selectionStyle = .none
     }
     
@@ -119,15 +119,14 @@ class NANewsCell: UITableViewCell {
         self.newsImageView.load(with: url)
     }
     
-    func setStateForDescription(state: Bool) {
-        self.descriptionLabel.collapsed = state
-        self.layoutIfNeeded()
-    }
-    
     override func prepareForReuse() {
         self.titleLabel.text = ""
         self.dateLabel.text = ""
         self.descriptionLabel.text = ""
+        
+        // Change number of lines because Expandable Label has bug and at first showing shows one line less.
+        self.isFirstLoad = false
+        self.descriptionLabel.numberOfLines = self.isFirstLoad == true ? 4 : 3
     }
     
     private func formatDate(date: String) -> String {
@@ -142,6 +141,12 @@ class NANewsCell: UITableViewCell {
         
         return String(clearDate)
     }
+    
+    func setStateForDescription(state: Bool) {
+        self.descriptionLabel.collapsed = state
+        self.layoutIfNeeded()
+    }
+    
     // MARK: - Constraints
     private func constraints() {
         self.containerView.snp.updateConstraints { (make) in

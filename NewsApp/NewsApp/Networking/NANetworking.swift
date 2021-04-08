@@ -30,8 +30,23 @@ class NANetworking {
     private init() { }
     
     // MARK: - Methods
+    func getNews(parameters: [String: String],
+                 completionHandler: (() -> Void)?,
+                 errorHandler: @escaping (NANetworkingErrors) -> Void) {
+        Swift.debugPrint("getNews")
+        self.request(parameters: parameters) { (response) in
+            Swift.debugPrint("request with response")
+            self.handleResponse(response) {
+                completionHandler?()
+            }
+        } errorHandler: { (error) in
+            Swift.debugPrint("request with error")
+            Swift.debugPrint(error)
+        }
+    }
+    
     /// Create request with path parameters.
-    func request(parameters: [String: String],
+    private func request(parameters: [String: String],
                  successHandler: @escaping (NAResponseModel) -> Void,
                  errorHandler: @escaping (NANetworkingErrors) -> Void) {
         // Add necessary parameters to apiKey
@@ -89,6 +104,15 @@ class NANetworking {
             }
         }
         dataTask.resume()
+    }
+    
+    private func handleResponse(_ response: NAResponseModel,
+                                completionHandler: (() -> Void)?) {
+        Swift.debugPrint("Handle Response")
+        for article in response.articles {
+            NACoreDataManager.shared.storeData(with: article)
+        }
+        completionHandler?()
     }
 }
 

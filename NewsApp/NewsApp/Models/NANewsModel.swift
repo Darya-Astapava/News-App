@@ -23,5 +23,12 @@ struct NANewsModel: Codable {
         self.urlToImage = try container.decodeIfPresent(String.self, forKey: .urlToImage)
         self.publishedAt = try container.decode(String.self, forKey: .publishedAt)
     }
+    
+    init(title: String, description: String?, image: String?, date: String) {
+        self.title = title
+        self.description = description
+        self.publishedAt = date
+        self.urlToImage = image
+    }
 }
 

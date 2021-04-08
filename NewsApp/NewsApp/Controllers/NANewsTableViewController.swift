@@ -11,12 +11,12 @@ import ExpandableLabel
 class NANewsTableViewController: UITableViewController {
     // MARK: - Variables
     private lazy var model: [NANewsModel] = []
+    private lazy var filteredNews: [NANewsModel] = []
     private lazy var date = Date()
     private lazy var dateCount = 1
     private lazy var isMakingRequest: Bool = false
     private lazy var states: [Bool] = []
     private lazy var rowCount = 0
-    private lazy var filteredNews: [NANewsModel] = []
     private lazy var isFirstLoad: Bool = true
     
     private var searchBarIsEmpty: Bool {
@@ -50,12 +50,23 @@ class NANewsTableViewController: UITableViewController {
         
         self.setupTableView()
         self.setupRefreshControl()
-        self.sendRequest(date: self.date)
+        self.readNews(date: self.date)
     }
     
     // MARK: - Methods
     /// Pull articles with a passed date.
-    private func sendRequest(date: Date) {
+    func readNews(date: Date) {
+        Swift.debugPrint("readNews")
+        
+        // TODO: read news from CoreData with selected date
+        NACoreDataManager.shared.readData(date: date.formatDateToString()) { (model) in
+            Swift.debugPrint("read data with model from VC")
+            self.handleResponse(model: model)
+        } errorHandler: {
+            Swift.debugPrint("readNews errorHandler")
+        }
+        
+        /* The old issue with API request
         // Date for request
         let parameters: [String: String] = ["from": date.formatDateToString(),
                                             "to": date.formatDateToString()]
@@ -75,6 +86,7 @@ class NANewsTableViewController: UITableViewController {
                                             self?.tableView.refreshControl?.endRefreshing()
                                         }
                                     })
+ */
     }
     
     private func setupTableView() {
@@ -108,7 +120,18 @@ class NANewsTableViewController: UITableViewController {
         self.date = newDate
         self.dateCount += 1
         
-        self.sendRequest(date: self.date)
+        self.readNews(date: self.date)
+    }
+    
+    private func parseNews(with news: News,
+                           completionHandler: ((NANewsModel) -> Void)?) {
+        Swift.debugPrint("parseNews")
+        let news = NANewsModel(title: news.title ?? "",
+                               description: news.articleDescription,
+                               image: news.image,
+                               date: news.publishedAt ?? "")
+        
+        completionHandler?(news)
     }
     
     // MARK: - Actions
@@ -117,25 +140,30 @@ class NANewsTableViewController: UITableViewController {
         self.model = []
         self.rowCount = 0
         self.date = Date()
-        self.sendRequest(date: self.date)
+        self.readNews(date: self.date)
     }
     
     // MARK: - Handlers
     /// Handle passed data model and reload table data.
-    private func handleResponse(model: NAResponseModel) {
+    private func handleResponse(model: [News]) {
+        Swift.debugPrint("handleResponse")
         var newModel: [NANewsModel] = []
         
-        model.articles.forEach { (article) in
-            newModel.append(article)
+        model.forEach { [weak self] (article) in
+            self?.parseNews(with: article) { news in
+                newModel.append(news)
+            }
         }
         
-        // Compare with 100 because page siza of response limited 100 articles
-        self.rowCount = model.articles.count < 100
-            ? self.rowCount + model.articles.count
+        // Compare with 100 because page size of response limited 100 articles
+        self.rowCount = model.count < 100
+            ? self.rowCount + model.count
             : self.rowCount + 100
         
         self.model += newModel
+        Swift.debugPrint(self.model)
         
+        // For ExpandableLabel
         let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
         self.states += statesForNewArticles
         
@@ -234,6 +262,8 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
             let news: NANewsModel = isFiltering
                 ? self.filteredNews[indexPath.row]
                 : self.model[indexPath.row]
+            
+            
             
             cell.setNews(title: news.title,
                          description: news.description ?? "",

@@ -18,7 +18,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if let window = self.window {
             let navigationController = UINavigationController()
-            navigationController.viewControllers = [NANewsTableViewController()]
+            let vc = NANewsTableViewController()
+            navigationController.viewControllers = [vc]
+            
+            let requestParameters: [String: String] = ["from": Date().formatDateToString(),
+                                                "to": Date().formatDateToString()]
+            
+            NANetworking.shared.getNews(parameters: requestParameters) {
+                vc.readNews(date: Date())
+            } errorHandler: { (error) in
+                Swift.debugPrint("First request with error - \(error)")
+            }
             
             window.rootViewController = navigationController
             window.makeKeyAndVisible()

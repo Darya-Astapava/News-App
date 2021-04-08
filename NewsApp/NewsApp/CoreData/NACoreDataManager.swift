@@ -86,7 +86,7 @@ class NACoreDataManager {
             guard let urlPath = URL(string: url),
                   let data = try? Data(contentsOf: urlPath) else { return }
             
-            let imageData = data.base64EncodedString(options: .lineLength64Characters)
+            let imageData = data.base64EncodedString()
             
        //     DispatchQueue.main.async {
                 Swift.debugPrint("pass imageStringData from transformImageToString64 to storeData ")

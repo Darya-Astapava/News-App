@@ -118,6 +118,7 @@ class NANewsCell: UITableViewCell {
         
         guard let url = imageURL else { return }
         self.newsImageView.loadFromStringData(with: url)
+        self.newsImageView.setNeedsDisplay()
     }
     
     override func prepareForReuse() {

@@ -111,12 +111,13 @@ class NANewsCell: UITableViewCell {
                  description: String,
                  date: String,
                  imageURL: String?) {
+        
         self.titleLabel.text = title
         self.descriptionLabel.text = description
         self.dateLabel.text = self.formatDate(date: date)
         
         guard let url = imageURL else { return }
-        self.newsImageView.load(with: url)
+        self.newsImageView.loadFromStringData(with: url)
     }
     
     override func prepareForReuse() {

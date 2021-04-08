@@ -82,16 +82,16 @@ class NACoreDataManager {
                                           completionHandler: ((String) -> Void)?) {
         guard let url = url else { return }
         
-        DispatchQueue.global().async {
-            guard let url = URL(string: url),
-                  let data = try? Data(contentsOf: url) else { return }
+     //   DispatchQueue.global().async {
+            guard let urlPath = URL(string: url),
+                  let data = try? Data(contentsOf: urlPath) else { return }
             
             let imageData = data.base64EncodedString(options: .lineLength64Characters)
             
-            DispatchQueue.main.async {
-                completionHandler?(imageData)
+       //     DispatchQueue.main.async {
                 Swift.debugPrint("pass imageStringData from transformImageToString64 to storeData ")
-            }
-        }
+                completionHandler?(imageData)
+        //    }
+      //  }
     }
 }

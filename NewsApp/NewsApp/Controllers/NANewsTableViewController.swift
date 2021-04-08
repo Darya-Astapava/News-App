@@ -261,7 +261,7 @@ extension NANewsTableViewController: ExpandableLabelDelegate {
                 ? self.filteredNews[indexPath.row]
                 : self.model[indexPath.row]
             
-            
+            Swift.debugPrint(news.urlToImage)
             
             cell.setNews(title: news.title,
                          description: news.description ?? "",

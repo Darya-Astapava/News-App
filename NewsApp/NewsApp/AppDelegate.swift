@@ -22,9 +22,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navigationController.viewControllers = [vc]
             
             let requestParameters: [String: String] = ["from": Date().formatDateToString(),
-                                                "to": Date().formatDateToString()]
+                                                       "to": Date().formatDateToString()]
             
             NANetworking.shared.getNews(parameters: requestParameters) {
+                Swift.debugPrint("AppDelegate completion hanler")
                 vc.readNews(date: Date())
             } errorHandler: { (error) in
                 Swift.debugPrint("First request with error - \(error)")

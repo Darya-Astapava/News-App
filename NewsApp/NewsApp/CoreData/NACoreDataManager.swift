@@ -37,33 +37,39 @@ class NACoreDataManager {
     }
     
     // MARK: - Methods
-    func storeData(with object: NANewsModel) {
+    func storeData(with objects: [NANewsModel],
+                   completionHandler: (() -> Void)?) {
         
-        let news = News(context: self.context)
-        news.title = object.title
-        news.articleDescription = object.description ?? ""
-        news.publishedAt = object.publishedAt
-        
-        self.transformImageToString64(from: object.urlToImage) { (date) in
-            news.image = date
+        for object in objects {
+            
+            let article = News(context: self.context)
+            article.title = object.title
+            article.articleDescription = object.description ?? ""
+            article.publishedAt = object.publishedAt
+            
+            self.transformImageToString64(from: object.urlToImage) { (date) in
+                article.image = date
+            }
         }
         
         do {
             try self.context.save()
-            Swift.debugPrint("data was stored")
+            Swift.debugPrint("data was stored with news image string")
+            completionHandler?()
         } catch let error as NSError {
             Swift.debugPrint("Could not save data. \(error), \(error.userInfo)")
         }
     }
     
-    func readData(date: String, completionHandler: (([News]) -> Void)?, errorHandler: (() -> Void)?) {
+    func readData(date: String,
+                  completionHandler: (([News]) -> Void)?,
+                  errorHandler: (() -> Void)?) {
         // TODO: request with selected date
         Swift.debugPrint("try read data")
-     //   let fetchRequest = NSFetchRequest<NSManagedObject>(entityName: "News")
         
         do {
-                        guard let result = try self.context.fetch(News.fetchRequest()) as? [News] else { return }
-//            guard let result = try self.context.fetch(fetchRequest) as? [News] else { return }
+            guard let result = try self.context.fetch(News.fetchRequest())
+                    as? [News] else { return }
             completionHandler?(result)
         } catch  let error as NSError {
             Swift.debugPrint("Couldn't read data. \(error), \(error.userInfo)")
@@ -84,6 +90,7 @@ class NACoreDataManager {
             
             DispatchQueue.main.async {
                 completionHandler?(imageData)
+                Swift.debugPrint("pass imageStringData from transformImageToString64 to storeData ")
             }
         }
     }

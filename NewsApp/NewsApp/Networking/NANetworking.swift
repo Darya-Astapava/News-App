@@ -23,7 +23,7 @@ class NANetworking {
         "sources": "bbc-news",
         "language": "en",
         // Limit page size because free developer plan allow to get only 100 articles in one request.
-        "pageSize": "100"
+        "pageSize": "10"
     ]
     
     // MARK: - Initializations
@@ -33,15 +33,16 @@ class NANetworking {
     func getNews(parameters: [String: String],
                  completionHandler: (() -> Void)?,
                  errorHandler: @escaping (NANetworkingErrors) -> Void) {
-        Swift.debugPrint("getNews")
+        
+        Swift.debugPrint("Networking getNews")
         self.request(parameters: parameters) { (response) in
-            Swift.debugPrint("request with response")
+            Swift.debugPrint("Networking completion handler from request")
             self.handleResponse(response) {
+                Swift.debugPrint("Networking completion handler from handle response")
                 completionHandler?()
             }
         } errorHandler: { (error) in
-            Swift.debugPrint("request with error")
-            Swift.debugPrint(error)
+            Swift.debugPrint("request with error ", error)
         }
     }
     
@@ -49,6 +50,7 @@ class NANetworking {
     private func request(parameters: [String: String],
                  successHandler: @escaping (NAResponseModel) -> Void,
                  errorHandler: @escaping (NANetworkingErrors) -> Void) {
+        Swift.debugPrint("Nerworking request")
         // Add necessary parameters to apiKey
         var urlParameters = self.parameters
         parameters.forEach { urlParameters[$0.key] = $0.value }
@@ -78,6 +80,7 @@ class NANetworking {
                     do {
                         let model = try JSONDecoder().decode(NAResponseModel.self, from: data)
                         DispatchQueue.main.async {
+                            Swift.debugPrint("SuccessHandler in request")
                             successHandler(model)
                         }
                     } catch let error {
@@ -109,10 +112,10 @@ class NANetworking {
     private func handleResponse(_ response: NAResponseModel,
                                 completionHandler: (() -> Void)?) {
         Swift.debugPrint("Handle Response")
-        for article in response.articles {
-            NACoreDataManager.shared.storeData(with: article)
-        }
-        completionHandler?()
+        NACoreDataManager.shared.storeData(with: response.articles) {
+            Swift.debugPrint("completionHandler in Handle Response")
+                completionHandler?()
+            }
     }
 }
 

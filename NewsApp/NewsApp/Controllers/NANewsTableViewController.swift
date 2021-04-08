@@ -125,7 +125,6 @@ class NANewsTableViewController: UITableViewController {
     
     private func parseNews(with news: News,
                            completionHandler: ((NANewsModel) -> Void)?) {
-        Swift.debugPrint("parseNews")
         let news = NANewsModel(title: news.title ?? "",
                                description: news.articleDescription,
                                image: news.image,
@@ -146,7 +145,7 @@ class NANewsTableViewController: UITableViewController {
     // MARK: - Handlers
     /// Handle passed data model and reload table data.
     private func handleResponse(model: [News]) {
-        Swift.debugPrint("handleResponse")
+        Swift.debugPrint("VC: handleResponse")
         var newModel: [NANewsModel] = []
         
         model.forEach { [weak self] (article) in
@@ -161,7 +160,6 @@ class NANewsTableViewController: UITableViewController {
             : self.rowCount + 100
         
         self.model += newModel
-        Swift.debugPrint(self.model)
         
         // For ExpandableLabel
         let statesForNewArticles = [Bool](repeating: true, count: newModel.count)
